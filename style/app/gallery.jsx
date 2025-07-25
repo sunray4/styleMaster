@@ -16,50 +16,69 @@ const Gallery = () => {
   const screenWidth = Dimensions.get("window").width;
   const imageSize = (screenWidth - 48) / 3; // 3 columns with padding
 
-  // Function to get all available images
-  // Simply update this array when you add new images
-  const getAvailableImages = () => {
-    const imageFiles = [
-      "image_0.jpg",
-      "image_1.jpg",
-      "image_2.jpg",
-      "image_3.jpg",
-      "image_4.jpg",
-      "image_5.jpg",
-      "image_6.jpg",
-      "image_7.jpg",
-      "image_8.jpg",
-      "image_9.jpg",
-      "image_10.jpg",
-      "image_11.jpg",
-      "image_12.jpg",
-      "image_13.jpg",
-      "image_14.jpg",
-      "image_15.jpg",
-      "image_16.jpg",
-      "image_17.jpg",
-      "image_18.jpg",
-      "image_19.jpg",
-      "image_20.jpg",
-      "image_21.jpg",
-      "image_22.jpg",
-      "image_23.jpg",
-      "image_24.jpg",
-      "image_25.jpg",
-      "image_26.jpg",
-      // Add new image filenames here when you add more images
-    ];
+  // State to store discovered images
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    return imageFiles.map((filename, index) => ({
-      id: index,
-      source: `../../backend/images/${filename}`,
-      filename: filename,
-    }));
+  // Function to automatically discover images
+  const discoverImages = async () => {
+    const discoveredImages = [];
+    let index = 0;
+    const maxImages = 1000; // Safety limit
+
+    // Test each potential image file
+    while (index < maxImages) {
+      const imagePath = `../../backend/images/image_${index}.jpg`;
+
+      try {
+        // We'll attempt to preload the image to check if it exists
+        await new Promise((resolve, reject) => {
+          Image.prefetch(imagePath)
+            .then(() => {
+              discoveredImages.push({
+                id: index,
+                source: imagePath,
+                filename: `image_${index}.jpg`,
+              });
+              resolve();
+            })
+            .catch(() => {
+              // Image doesn't exist, stop searching
+              reject();
+            });
+        });
+        index++;
+      } catch (error) {
+        // No more images found, break the loop
+        break;
+      }
+    }
+
+    setImages(discoveredImages);
+    setLoading(false);
   };
 
-  const images = getAvailableImages();
-  const imageCount = images.length;
+  useEffect(() => {
+    discoverImages();
+  }, []);
+
   const renderImageGrid = () => {
+    if (loading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Loading images...</Text>
+        </View>
+      );
+    }
+
+    if (images.length === 0) {
+      return (
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>No images found</Text>
+        </View>
+      );
+    }
+
     const rows = [];
     for (let i = 0; i < images.length; i += 3) {
       const rowImages = images.slice(i, i + 3);
@@ -178,6 +197,17 @@ const styles = StyleSheet.create({
   },
   gridImage: {
     borderRadius: 8,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 50,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: "black",
+    fontWeight: "500",
   },
   content: {
     flex: 1,
