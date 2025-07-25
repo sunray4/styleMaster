@@ -9,7 +9,7 @@ const Browse = () => {
   );
 };
 
-export default browse;
+export default Browse;
 
 const styles = StyleSheet.create({
   container: {
