@@ -159,30 +159,30 @@ const Browse = () => {
         {/* Carousel Section */}
         <View style={styles.carouselContainer}>
           <FlatList
-            data={
-              carouselDataTops 
-            }
+            data={carouselDataTops}
             renderItem={renderCarouselItem}
             keyExtractor={(item) => item.id.toString()}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
-            pagingEnabled={true}
-            snapToAlignment="center"
+            pagingEnabled={false}
+            snapToInterval={screenWidth * 0.6 + 20}
             decelerationRate="fast"
             contentContainerStyle={styles.carouselContent}
           />
         </View>
 
         {/* Second Carousel Section */}
-        <View style={styles.carouselContainer}>
+        <View
+          style={[styles.carouselContainer, { height: "50%", marginTop: 20 }]}
+        >
           <FlatList
             data={carouselDataBottoms}
             renderItem={renderCarouselItem}
             keyExtractor={(item) => item.id.toString()}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
-            pagingEnabled={true}
-            snapToAlignment="center"
+            pagingEnabled={false}
+            snapToInterval={screenWidth * 0.6 + 20}
             decelerationRate="fast"
             contentContainerStyle={styles.carouselContent}
           />
@@ -448,32 +448,34 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     gap: 15,
     elevation: 5,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: -2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
   },
   bottomButton: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "#AEDFF7",
     borderRadius: 25,
-    borderWidth: 2,
-    borderColor: "black",
+    borderWidth: 1,
+    borderColor: "#7AAFC1",
     paddingHorizontal: 20,
     paddingVertical: 12,
     flex: 1,
-    maxWidth: 140,
+    maxWidth: 200,
     alignItems: "center",
     marginHorizontal: 5,
+    marginBottom: 30,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   secondButton: {
-    backgroundColor: "#FF6D6D",
+    backgroundColor: "#FFD6D7",
+    borderColor: "#E5A4A6",
   },
   bottomButtonText: {
     color: "black",
@@ -494,8 +496,16 @@ const styles = StyleSheet.create({
   },
   // Carousel Styles
   carouselContainer: {
-    height: "40%",
-    marginTop: 20,
+    height: "43%",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   carouselHeader: {
     fontSize: 18,
@@ -503,9 +513,10 @@ const styles = StyleSheet.create({
     color: "black",
     textAlign: "center",
     marginTop: 15,
+    marginBottom: 10,
   },
   carouselContent: {
-    paddingHorizontal: 10,
+    paddingHorizontal: (screenWidth - screenWidth * 0.6) / 3.2,
   },
   carouselItem: {
     width: screenWidth * 0.6,

@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useAuth } from "./context/AuthContext";
 
-import Logo from "../assets/Cat Illustration.png"; // Adjust the path as necessary
+import Logo from "../assets/cat_logo.svg"; // Adjust the path as necessary
 
 const Home = () => {
   const { userEmail, isLoading, logout } = useAuth();
@@ -88,16 +88,16 @@ const Home = () => {
     <View style={styles.container}>
       <Text style={styles.header}>Welcome to Style</Text>
 
-      <Animated.Image
-        source={Logo}
+      <Animated.View
         style={[
-          styles.image,
+          styles.imageFrame,
           {
             transform: [{ translateY: floatAnimation }],
           },
         ]}
-        resizeMode="cover"
-      />
+      >
+        <Logo width="100%" height="100%" viewBox="0 0 1000 1000" />
+      </Animated.View>
       <TouchableOpacity
         style={[styles.button, browseHover && { backgroundColor: "#90EE90" }]}
         onPressIn={() => onPressButton("Browse")}
@@ -143,9 +143,10 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     textAlign: "center",
   },
-  image: {
+  imageFrame: {
     width: 200,
     height: 200,
+    overflow: "hidden",
     borderRadius: 100,
     marginBottom: 30,
     shadowColor: "#000",
@@ -158,6 +159,11 @@ const styles = StyleSheet.create({
     elevation: 8,
     borderWidth: 2,
     borderColor: "black",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 100,
   },
   button: {
     backgroundColor: "#6D9BFF",
