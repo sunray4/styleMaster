@@ -1,25 +1,27 @@
 from playwright.sync_api import sync_playwright
 import requests
-
+import time
 with sync_playwright() as p:
 
     browser = p.chromium.launch(headless=False)
 
     page = browser.new_page()
 
-    page.goto('https://www2.hm.com/en_ca/search-results.html?q=shirt')
+    page.goto('https://www2.hm.com/en_ca/search-results.html?q=casual%20bottom&image=stillLife&department=ladies_all&sort=RELEVANCE&page=2')
     page.wait_for_selector("ul > li")
-    image_elements = page.query_selector_all("ul > li")
+    for _ in range(5):
+        page.mouse.wheel(0, 2000)
+        time.sleep(0.00001)
+    image_elements = page.query_selector_all("ul > li.is-active")
     img_urls = []
     for item in image_elements:
-        first_img = item.query_selector("img")
-        if first_img:
-            src = first_img.get_attribute("src")
-            if src and src.startswith("http"):
-                img_urls.append(src)
+        img = item.query_selector("img")
+        if img:
+            src = img.get_attribute("src")
+            img_urls.append(src)
+    idx = 0
     for url in img_urls:
+        open(f"images/women-casual-bottom-page2_{idx}.jpg", "wb").write(requests.get(url).content)
         print(url)
-    print(len(img_urls))
+        idx += 1
     browser.close()
-
-

@@ -4,11 +4,14 @@ import {
   View,
   TouchableOpacity,
   SafeAreaView,
+  ScrollView,
+  Image,
+  Dimensions,
 } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "expo-router";
 
-const Browse = () => {
+const Gallery = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Fixed Header */}
@@ -18,19 +21,14 @@ const Browse = () => {
             ← Home
           </Link>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Browse</Text>
+        <Text style={styles.headerTitle}>Gallery</Text>
         <View style={styles.placeholder} />
-      </View>
-
-      {/* Main Content */}
-      <View style={styles.content}>
-        <Text>browse</Text>
       </View>
     </SafeAreaView>
   );
 };
 
-export default Browse;
+export default Gallery;
 
 const styles = StyleSheet.create({
   container: {
@@ -72,6 +70,36 @@ const styles = StyleSheet.create({
   },
   placeholder: {
     width: 60, // Same width as home button to center the title
+  },
+  scrollContainer: {
+    flex: 1,
+  },
+  gridContainer: {
+    padding: 16,
+  },
+  imageRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
+  imageContainer: {
+    borderRadius: 8,
+    overflow: "hidden",
+    backgroundColor: "#E0E0E0",
+  },
+  gridImage: {
+    borderRadius: 8,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 50,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: "black",
+    fontWeight: "500",
   },
   content: {
     flex: 1,
