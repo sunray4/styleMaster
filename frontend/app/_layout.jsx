@@ -20,8 +20,8 @@ const RootLayout = () => {
       <Stack.Screen
         name="browse"
         options={{ title: "Browse", headerShown: false }}
-      />{" "}
-      //idk if we want to add our own little header
+      />
+      {/* idk if we want to add our own little header */}
       <Stack.Screen
         name="gallery"
         options={{ title: "Gallery", headerShown: false }}

@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import {
   StyleSheet,
   Text,
@@ -46,6 +46,19 @@ const Home = () => {
     startFloating();
   }, [floatAnimation]);
 
+  // Handle press button link
+  const onPressButton = (buttonName) => {
+    if (buttonName === "Browse") {
+      console.log("Browse button pressed!");
+      setBrowseHover(true);
+      router.push("/browse");
+    } else if (buttonName === "Gallery") {
+      console.log("Gallery button pressed!");
+      setGalleryHover(true);
+      router.push("/gallery");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Welcome to Style</Text>
@@ -62,12 +75,10 @@ const Home = () => {
       />
       <TouchableOpacity
         style={[styles.button, browseHover && { backgroundColor: "#90EE90" }]}
-        onPressIn={() => setBrowseHover(true)}
+        onPressIn={() => onPressButton("Browse")}
         onPressOut={() => setBrowseHover(false)}
       >
-        <Text style={styles.buttonText}>
-          <Link href="/browse">Browse</Link>
-        </Text>
+        <Text style={styles.buttonText}>Browse</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[
@@ -75,12 +86,10 @@ const Home = () => {
           { backgroundColor: "#FF6D6D" },
           galleryHover && { backgroundColor: "#90EE90" },
         ]}
-        onPressIn={() => setGalleryHover(true)}
+        onPressIn={() => onPressButton("Gallery")}
         onPressOut={() => setGalleryHover(false)}
       >
-        <Text style={styles.buttonText}>
-          <Link href="/gallery">Gallery</Link>
-        </Text>
+        <Text style={styles.buttonText}>Gallery</Text>
       </TouchableOpacity>
       <Link href="/login">Login</Link>
     </View>
@@ -102,7 +111,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontFamily: "Atma-Bold", // Now matches the key we used in useFonts
     color: "black",
-    marginBottom: 30,
+    marginBottom: 40,
     textAlign: "center",
   },
   image: {
@@ -118,11 +127,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
+    borderWidth: 2,
+    borderColor: "black",
   },
   button: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "#6D9BFF",
     borderRadius: 25,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: "black",
     padding: 16,
     width: "80%",

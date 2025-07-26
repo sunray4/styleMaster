@@ -52,13 +52,12 @@ const Login = () => {
         <TouchableOpacity style={styles.signInButton}>
           <Text style={styles.signInButtonText}>Sign In</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity style={styles.registerButton}>
-          <Text style={styles.registerButtonText}>
-            {" "}
-            <Link href="/signup">Sign Up </Link>{" "}
-          </Text>
-        </TouchableOpacity>
+        <Text style={styles.label}>
+          Don't have an account?{" "}
+          <Link href="/signup" style={styles.signUpText}>
+            Sign Up
+          </Link>
+        </Text>
       </View>
     </View>
   );
@@ -142,12 +141,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#666",
   },
+  signUpText: {
+    color: "#007AFF",
+    fontSize: 16,
+    textDecorationLine: "underline",
+  },
   signInButton: {
-    backgroundColor: "#007AFF",
-    borderRadius: 8,
+    backgroundColor: "#6D9BFF",
+    borderRadius: 25,
     padding: 16,
-    marginTop: 24,
+    width: "80%",
     alignItems: "center",
+    alignSelf: "center",
+    marginBottom: 16,
+    marginTop: 5,
   },
   signInButtonText: {
     color: "white",

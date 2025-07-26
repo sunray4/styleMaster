@@ -79,9 +79,12 @@ const Signup = () => {
           <Text style={styles.registerButtonText}>Register</Text>
         </TouchableOpacity>
 
-        <Link href="/login" style={styles.loginLinkContainer}>
-          <Text style={styles.loginLinkText}>Already have an account?</Text>
-        </Link>
+        <Text style={styles.label}>
+          Already have an account?{" "}
+          <Link href="/login" style={styles.logInText}>
+            Log In
+          </Link>
+        </Text>
       </View>
     </View>
   );
@@ -166,11 +169,14 @@ const styles = StyleSheet.create({
     color: "#666",
   },
   registerButton: {
-    backgroundColor: "#007AFF",
-    borderRadius: 8,
+    backgroundColor: "#6D9BFF",
+    borderRadius: 25,
     padding: 16,
-    marginTop: 24,
+    width: "80%",
     alignItems: "center",
+    alignSelf: "center",
+    marginBottom: 3,
+    marginTop: 5,
   },
   registerButtonText: {
     color: "white",
@@ -187,5 +193,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textDecorationLine: "underline",
     textAlign: "center",
+  },
+  logInText: {
+    color: "#007AFF",
+    fontSize: 16,
+    textDecorationLine: "underline",
   },
 });
