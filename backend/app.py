@@ -29,7 +29,7 @@ def index():
 def scrape_images():
     print("Scraping images...")
     gender = request.args.get('gender', 'all')
-    formality = request.args.get('formality', 'none')
+    formality = request.args.get('formality', 'all')
     success = scraper2.scrape_images(gender, formality)
     if success:
         files = os.listdir(IMAGE_FOLDER_TOPS)
@@ -104,16 +104,17 @@ def signup():
 
 @app.route('/gallery', methods=['GET'])
 def gallery():
+    print("Fetching gallery images...")
     email = request.args.get('email')
+    print(email)
     # Validate email
     if not email:
         return jsonify({'status': 'error', 'message': 'Email is required'}), 400
     # Fetch images from the database or file system
     images = []
     for user in users.find({"username": email}):
-        images.extend(user.get('images', []))
-        break
-    
+        images.extend(user.get('fits', []))
+    print("images", images)
     if images == []:
         return jsonify({'status': 'error', 'message': 'No images found'}), 404
     return jsonify({'status': 'success', 'data': images}), 200

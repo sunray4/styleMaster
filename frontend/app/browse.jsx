@@ -1,3 +1,9 @@
+import {
+  Nunito_600SemiBold,
+  Nunito_700Bold,
+  Nunito_900Black,
+  useFonts,
+} from "@expo-google-fonts/nunito";
 import React, { useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -22,7 +28,6 @@ const { width: screenWidth } = Dimensions.get("window");
 const Browse = () => {
   const address = "https://ef7cb4d3179c.ngrok-free.app";
 
-  // Add defensive programming for useAuth
   let userEmail = null;
   try {
     const auth = useAuth();
@@ -44,14 +49,27 @@ const Browse = () => {
   const [notificationMessage, setNotificationMessage] = useState("");
   const notificationAnimation = useRef(new Animated.Value(-100)).current;
 
+  let [fontsLoaded] = useFonts({
+    Nunito_900Black,
+    Nunito_700Bold,
+    Nunito_600SemiBold,
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   const renderCarouselItem = ({ item }) => (
-    <TouchableOpacity style={styles.carouselItem}>
+    <TouchableOpacity
+      style={styles.carouselItem}
+      onPress={() => getDescription(item.image)}
+    >
       <Image
         source={{ uri: item.image }}
         style={styles.carouselImage}
         resizeMode="cover"
       />
-      <Text style={styles.carouselTitle}>{item.title}</Text>
+      <Text style={styles.carouselTitle}>Get description</Text>
     </TouchableOpacity>
   );
 
@@ -69,7 +87,7 @@ const Browse = () => {
     setNotificationMessage(message);
     setShowNotification(true);
 
-    // Animate dropdown
+    // Animate notif dropdown
     Animated.timing(notificationAnimation, {
       toValue: 0,
       duration: 300,
@@ -77,7 +95,7 @@ const Browse = () => {
     }).start();
 
     setTimeout(() => {
-      // Animate back up
+      // Animate notif back up
       Animated.timing(notificationAnimation, {
         toValue: -100,
         duration: 300,
@@ -116,7 +134,7 @@ const Browse = () => {
         setLoadingMessage("Styles fetched!!");
         const responseData = await response.json();
 
-        // Convert base64 data to carousel format
+        // Convert images to carousel format
         const topsData = responseData.data.tops.map((item, index) => ({
           id: index + 1,
           title: `Top ${index + 1}`,
@@ -260,7 +278,7 @@ const Browse = () => {
       {/* Fixed Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.push("/")}>
-          <Text style={styles.homeButtonText}>← Home</Text>
+          <Text style={[styles.homeButtonText, styles.defaultf]}>← Home</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Browse</Text>
         <View style={styles.placeholder} />
@@ -359,7 +377,12 @@ const Browse = () => {
                         ← Home
                       </Text>
                     </TouchableOpacity>
-                    <Text style={styles.modalHeader}>
+                    <Text
+                      style={[
+                        styles.modalHeader,
+                        { fontFamily: "Nunito_900Black" },
+                      ]}
+                    >
                       Do you have any styles in mind today?
                     </Text>
 
@@ -435,11 +458,11 @@ const styles = StyleSheet.create({
   homeButtonText: {
     fontSize: 16,
     color: "black",
-    fontWeight: "600",
+    fontFamily: "Nunito_600SemiBold",
   },
   headerTitle: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontFamily: "Nunito_900Black",
     color: "black",
     textAlign: "center",
   },
@@ -480,7 +503,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalContainer: {
-    backgroundColor: "#FAE7FF",
+    backgroundColor: "#FFD19F",
     borderRadius: 20,
     width: "90%", // 90% of screen width
     height: "70%", // 70% of screen height
@@ -502,7 +525,6 @@ const styles = StyleSheet.create({
   },
   modalHeader: {
     fontSize: 22,
-    fontWeight: "bold",
     color: "black",
     textAlign: "left",
     marginBottom: 30,
@@ -513,7 +535,7 @@ const styles = StyleSheet.create({
   },
   categoryTitle: {
     fontSize: 18,
-    fontWeight: "600",
+    fontFamily: "Nunito_600SemiBold",
     color: "black",
     marginBottom: 12,
   },
@@ -523,32 +545,32 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   optionButton: {
-    backgroundColor: "#BFFAE7",
+    backgroundColor: "#FFD6D7",
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: "#7FD1C6",
+    borderColor: "#E5A4A6",
     paddingHorizontal: 16,
     paddingVertical: 10,
     marginRight: 6,
     marginBottom: 6,
   },
   selectedButton: {
-    backgroundColor: "#4AB79F",
-    borderColor: "#2E7A66",
+    backgroundColor: "#e47f7fff",
+    borderColor: "#b65e5eff",
   },
   optionText: {
     fontSize: 14,
     color: "black",
-    fontWeight: "500",
+    fontFamily: "Nunito_600SemiBold",
   },
   selectedText: {
     color: "white",
   },
   doneButton: {
-    backgroundColor: "#FFD9F0",
+    backgroundColor: "#AEDFF7",
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: "#E0859B",
+    borderColor: "#7AAFC1",
     padding: 16,
     alignItems: "center",
     alignSelf: "center",
@@ -558,7 +580,7 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: "black",
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: "Nunito_900Black",
   },
   // Bottom Bar Styles
   bottomBar: {
@@ -602,7 +624,7 @@ const styles = StyleSheet.create({
   bottomButtonText: {
     color: "black",
     fontSize: 14,
-    fontWeight: "600",
+    fontFamily: "Nunito_700Bold",
   },
   loadingContainer: {
     flex: 1,
@@ -615,11 +637,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "black",
     marginTop: 16,
-    fontWeight: "500",
+    fontFamily: "Nunito_600SemiBold",
   },
   // Carousel Styles
   carouselContainer: {
-    height: "43%",
+    height: "40%",
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
@@ -632,7 +654,7 @@ const styles = StyleSheet.create({
   },
   carouselHeader: {
     fontSize: 18,
-    fontWeight: "600",
+    fontFamily: "Nunito_700Bold",
     color: "black",
     textAlign: "center",
     marginTop: 15,
@@ -646,6 +668,8 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: "white",
     borderRadius: 15,
+    borderWidth: 2,
+    borderColor: "#FFD19F",
     marginHorizontal: 10,
     padding: 12,
     alignItems: "center",
@@ -668,7 +692,7 @@ const styles = StyleSheet.create({
   },
   carouselTitle: {
     fontSize: 14,
-    fontWeight: "600",
+    fontFamily: "Nunito_600SemiBold",
     color: "black",
     textAlign: "center",
   },

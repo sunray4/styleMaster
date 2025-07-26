@@ -1,7 +1,7 @@
-import { router, Link } from "expo-router";
+import { Atma_600SemiBold, useFonts } from "@expo-google-fonts/atma";
+import { Nunito_600SemiBold, Nunito_900Black } from "@expo-google-fonts/nunito";
+import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import { useFonts, Atma_600SemiBold } from '@expo-google-fonts/atma';
-import { Nunito_900Black, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
 import {
   ActivityIndicator,
   Animated,
@@ -113,7 +113,6 @@ const Home = () => {
     return null;
   }
 
-
   // Show loading screen while checking authentication
   if (isLoading) {
     return (
@@ -145,7 +144,9 @@ const Home = () => {
   return (
     <View style={styles.container}>
       <BackgroundPattern />
-      <Text style={[styles.header, { fontFamily: 'Atma_600SemiBold'}]}>Welcome to Style</Text>
+      <Text style={[styles.title, { fontFamily: "Atma_600SemiBold" }]}>
+        Welcome to Style
+      </Text>
 
       <Animated.View
         style={[
@@ -196,7 +197,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  header: {
+  title: {
     fontSize: 40,
     color: "black",
     marginBottom: 10,

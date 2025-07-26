@@ -1,3 +1,9 @@
+import {
+  Nunito_600SemiBold,
+  Nunito_700Bold,
+  Nunito_900Black,
+  useFonts,
+} from "@expo-google-fonts/nunito";
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -11,6 +17,7 @@ import {
 
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Image } from "react-native";
+import { useAuth } from "./context/AuthContext";
 
 const Gallery = () => {
   const address = "https://ef7cb4d3179c.ngrok-free.app";
@@ -18,20 +25,25 @@ const Gallery = () => {
   const [imagesBottoms, setImagesBottoms] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const auth = useAuth();
+  const userEmail = auth.userEmail;
+
   const getGalleryData = async () => {
     // Commenting out backend fetch temporarily
-
     try {
-      const response = await fetch(address + "/gallery", {
+      const response = await fetch(address + "/gallery?email=" + userEmail, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
+      const responseData = await response.json();
+      console.log("gallery response", responseData);
       if (response.ok) {
-        const data = await response.json();
-        setImagesTops(data.imagesTops || []);
-        setImagesBottoms(data.imagesBottoms || []);
+        setImagesTops(responseData.data.map((item) => item.top));
+        setImagesBottoms(responseData.data.map((item) => item.bottom));
+      } else if (response.status === 404) {
+        console.log("No gallery data found");
       } else {
         console.error("Failed to fetch gallery data");
       }
@@ -41,42 +53,52 @@ const Gallery = () => {
       setLoading(false);
     }
 
+    let [fontsLoaded] = useFonts({
+      Nunito_900Black,
+      Nunito_700Bold,
+      Nunito_600SemiBold,
+    });
+
+    if (!fontsLoaded) {
+      return null;
+    }
+
     // Hardcoded sample data
-    // const sampleImageUrl =
-    //   "https://image.hm.com/assets/hm/44/64/4464618446c394fe79392b81ca8a9eb4e431011f.jpg?imwidth=657";
-    // const sampleImageUrl2 =
-    //   "https://image.hm.com/assets/hm/e6/4b/e64bb0639e54f8fe4d3ea1701f8a36aecb41b941.jpg?imwidth=2160";
-    // const sampleImageUrl3 =
-    //   "https://image.hm.com/assets/hm/40/f1/40f1d72540c2b82e707251f4d4aafc28817449c0.jpg?imwidth=2160";
-    // const sampleImageUrl4 =
-    //   "https://image.hm.com/assets/hm/50/97/5097ac96619bde92de285195f19e3d4ffa642974.jpg?imwidth=2160";
-    // const sampleImageUrl5 =
-    //   "https://image.hm.com/assets/hm/2f/a9/2fa91543ffcce7807669a8b830f3f1d34563ebe0.jpg?imwidth=2160";
+    const sampleImageUrl =
+      "https://image.hm.com/assets/hm/44/64/4464618446c394fe79392b81ca8a9eb4e431011f.jpg?imwidth=657";
+    const sampleImageUrl2 =
+      "https://image.hm.com/assets/hm/e6/4b/e64bb0639e54f8fe4d3ea1701f8a36aecb41b941.jpg?imwidth=2160";
+    const sampleImageUrl3 =
+      "https://image.hm.com/assets/hm/40/f1/40f1d72540c2b82e707251f4d4aafc28817449c0.jpg?imwidth=2160";
+    const sampleImageUrl4 =
+      "https://image.hm.com/assets/hm/50/97/5097ac96619bde92de285195f19e3d4ffa642974.jpg?imwidth=2160";
+    const sampleImageUrl5 =
+      "https://image.hm.com/assets/hm/2f/a9/2fa91543ffcce7807669a8b830f3f1d34563ebe0.jpg?imwidth=2160";
 
-    // const sampleTops = [
-    //   sampleImageUrl,
-    //   sampleImageUrl4,
-    //   sampleImageUrl,
-    //   sampleImageUrl,
-    //   sampleImageUrl,
-    //   sampleImageUrl,
-    // ];
+    const sampleTops = [
+      sampleImageUrl,
+      sampleImageUrl4,
+      sampleImageUrl,
+      sampleImageUrl,
+      sampleImageUrl,
+      sampleImageUrl,
+    ];
 
-    // const sampleBottoms = [
-    //   sampleImageUrl2,
-    //   sampleImageUrl3,
-    //   sampleImageUrl5,
-    //   sampleImageUrl,
-    //   sampleImageUrl,
-    //   sampleImageUrl,
-    // ];
+    const sampleBottoms = [
+      sampleImageUrl2,
+      sampleImageUrl3,
+      sampleImageUrl5,
+      sampleImageUrl,
+      sampleImageUrl,
+      sampleImageUrl,
+    ];
 
-    // // Simulate loading delay
-    // setTimeout(() => {
-    //   setImagesTops(sampleTops);
-    //   setImagesBottoms(sampleBottoms);
-    //   setLoading(false);
-    // }, 1000);
+    // Simulate loading delay
+    setTimeout(() => {
+      setImagesTops(sampleTops);
+      setImagesBottoms(sampleBottoms);
+      setLoading(false);
+    }, 1000);
   };
 
   useEffect(() => {
@@ -217,8 +239,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFC688",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    // borderBottomWidth: 1,
-    // borderBottomColor: "#E0E0E0",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E0E0E0",
     elevation: 3,
     shadowColor: "#000",
     shadowOffset: {
@@ -237,14 +259,14 @@ const styles = StyleSheet.create({
   homeButtonText: {
     fontSize: 16,
     color: "black",
-    fontWeight: "600",
+    fontFamily: "Nunito_600SemiBold",
   },
   headerTitle: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontFamily: "Nunito_900Black",
     color: "black",
     textAlign: "center",
-    marginRight: 20,
+    marginRight: 15,
   },
   placeholder: {
     width: 60, // Same width as home button to center the title
@@ -302,7 +324,7 @@ const styles = StyleSheet.create({
   placeholderText: {
     fontSize: 12,
     color: "#666",
-    fontWeight: "500",
+    fontFamily: "Nunito_600SemiBold",
   },
   emptyContainer: {
     flex: 1,
@@ -313,7 +335,7 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     color: "black",
-    fontWeight: "500",
+    fontFamily: "Nunito_600SemiBold",
   },
   loadingContainer: {
     flex: 1,
