@@ -55,10 +55,9 @@ def scrape_images(gender, formality):
                     img_urls.append(src)
             idx = 0
             for url in img_urls:
-                open(f"images//tops/tops_{idx}.jpg", "wb").write(requests.get(url).content)
-                idx += 1
-            
-            
+                 open(f"images/tops/tops_{idx}.jpg", "wb").write(requests.get(url).content)
+                 idx += 1
+
             #BOTTOMS
             if formality == "casual" and gender == "men":
                 link = "https://www2.hm.com/en_ca/search-results.html?q=casual&productTypes=Jeans,Pajama+Pants,Pants,Shorts&image=stillLife&department=men_all&sort=RELEVANCE&page=5"
@@ -92,10 +91,11 @@ def scrape_images(gender, formality):
                     img_urls.append(src)
             idx = 0
             for url in img_urls:
-                open(f"images/bottoms/bottoms_{idx}.jpg", "wb").write(requests.get(url).content)
-                idx += 1
+                 open(f"images/bottoms/bottoms_{idx}.jpg", "wb").write(requests.get(url).content)
+                 idx += 1
             browser.close()
             return True
     except Exception as e:
         print(f"An error occurred: {e}")
         return False
+# scrape_images("women", "casual")

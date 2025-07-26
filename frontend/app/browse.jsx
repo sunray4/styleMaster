@@ -24,13 +24,15 @@ const Browse = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
 
+  let carouselDataTops = [];
+  let carouselDataBottoms = [];
+
   // Sample data for carousel - 6 items
-  const carouselData = [
+  const carouselData1 = [
     {
       id: 1,
       title: "Outfit 1",
-      image:
-        "https://image.hm.com/assets/hm/e8/9c/e89c9bcb140ed5ed4817072a8dbaa209bb2dc24b.jpg?imwidth=657",
+      image: "../../backend/images/tops/tops_1.jpg",
     },
     {
       id: 2,
@@ -64,6 +66,45 @@ const Browse = () => {
     },
   ];
 
+  const carouselData2 = [
+    {
+      id: 7,
+      title: "Style A",
+      image:
+        "https://image.hm.com/assets/hm/k1/l2/k1l2m3n4o5p6789012345678901234567890abcd.jpg?imwidth=657",
+    },
+    {
+      id: 8,
+      title: "Style B",
+      image:
+        "https://image.hm.com/assets/hm/m3/n4/m3n4o5p6q7r8901234567890abcdef123456789.jpg?imwidth=657",
+    },
+    {
+      id: 9,
+      title: "Style C",
+      image:
+        "https://image.hm.com/assets/hm/o5/p6/o5p6q7r8s9t0123456789abcdef123456789012.jpg?imwidth=657",
+    },
+    {
+      id: 10,
+      title: "Style D",
+      image:
+        "https://image.hm.com/assets/hm/q7/r8/q7r8s9t0u1v2345678901234567890abcdef123.jpg?imwidth=657",
+    },
+    {
+      id: 11,
+      title: "Style E",
+      image:
+        "https://image.hm.com/assets/hm/s9/t0/s9t0u1v2w3x4567890123456789abcdef123456.jpg?imwidth=657",
+    },
+    {
+      id: 12,
+      title: "Style F",
+      image:
+        "https://image.hm.com/assets/hm/u1/v2/u1v2w3x4y5z6789012345678901234567890ab.jpg?imwidth=657",
+    },
+  ];
+
   const renderCarouselItem = ({ item }) => (
     <TouchableOpacity style={styles.carouselItem}>
       <Image source={{ uri: item.image }} style={styles.carouselImage} />
@@ -81,7 +122,7 @@ const Browse = () => {
     setLoadingMessage("Loading recommendations...");
 
     try {
-      const response = await fetch("http://192.168.0.123:5000/scrape_images", {
+      const response = await fetch("http://127.0.0.1:5000/scrape_images", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -94,6 +135,9 @@ const Browse = () => {
 
       if (response.status === 200) {
         setLoadingMessage("Styles fetched!!");
+        responseData = await response.json();
+        carouselDataTops = responseData.data.tops;
+        carouselDataBottoms = responseData.data.bottoms;
         setTimeout(() => {
           setIsLoading(false);
           setShowPreferenceModal(false);
@@ -102,6 +146,7 @@ const Browse = () => {
         setLoadingMessage("Your request couldn't be processed :(");
         setTimeout(() => {
           setIsLoading(false);
+          setShowPreferenceModal(false);
           router.push("/");
         }, 3000);
       }
@@ -110,6 +155,7 @@ const Browse = () => {
       setLoadingMessage("Your request couldn't be processed :(");
       setTimeout(() => {
         setIsLoading(false);
+        setShowPreferenceModal(false);
         router.push("/");
       }, 3000);
     }
@@ -155,32 +201,38 @@ const Browse = () => {
 
       {/* Main Browse Content - Only visible after preferences are set */}
       <View style={styles.content}>
-        <Image
-          source={{
-            uri: "https://image.hm.com/assets/hm/e8/9c/e89c9bcb140ed5ed4817072a8dbaa209bb2dc24b.jpg?imwidth=657",
-          }}
-          style={{ width: 200, height: 200 }} // Specify dimensions
-        />
-
+        <Text style={styles.carouselHeader}>Recommended for you</Text>
         {/* Carousel Section */}
         <View style={styles.carouselContainer}>
-          <Text style={styles.carouselHeader}>Recommended for you</Text>
           <FlatList
-            data={carouselData}
+            data={
+              carouselDataTops.length > 0 ? carouselDataTops : carouselData1
+            }
             renderItem={renderCarouselItem}
             keyExtractor={(item) => item.id.toString()}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
-            pagingEnabled={false}
-            snapToInterval={screenWidth * 0.7 + 20} // Card width + margin
-            snapToAlignment="start"
+            pagingEnabled={true}
+            snapToAlignment="center"
             decelerationRate="fast"
             contentContainerStyle={styles.carouselContent}
           />
         </View>
 
-        <Text style={styles.contentText}>Browse content will appear here</Text>
-        <Text style={styles.subText}>Your preferences have been saved!</Text>
+        {/* Second Carousel Section */}
+        <View style={styles.carouselContainer}>
+          <FlatList
+            data={carouselData2}
+            renderItem={renderCarouselItem}
+            keyExtractor={(item) => item.id.toString()}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            pagingEnabled={true}
+            snapToAlignment="center"
+            decelerationRate="fast"
+            contentContainerStyle={styles.carouselContent}
+          />
+        </View>
       </View>
 
       {/* Fixed Bottom Bar */}
@@ -473,26 +525,28 @@ const styles = StyleSheet.create({
   },
   // Carousel Styles
   carouselContainer: {
-    marginTop: 30,
-    marginBottom: 20,
+    height: "40%",
+    marginTop: 20,
   },
   carouselHeader: {
     fontSize: 18,
     fontWeight: "600",
     color: "black",
     textAlign: "center",
-    marginBottom: 15,
+    marginTop: 15,
   },
   carouselContent: {
     paddingHorizontal: 10,
   },
   carouselItem: {
-    width: screenWidth * 0.7,
+    width: screenWidth * 0.6,
+    height: "100%",
     backgroundColor: "white",
     borderRadius: 15,
     marginHorizontal: 10,
-    padding: 15,
+    padding: 12,
     alignItems: "center",
+    justifyContent: "space-between",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -504,13 +558,13 @@ const styles = StyleSheet.create({
   },
   carouselImage: {
     width: "100%",
-    height: 180,
+    flex: 1,
     borderRadius: 10,
-    marginBottom: 10,
+    marginBottom: 8,
     resizeMode: "cover",
   },
   carouselTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "600",
     color: "black",
     textAlign: "center",
