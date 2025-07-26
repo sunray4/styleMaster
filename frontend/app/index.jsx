@@ -1,18 +1,20 @@
-import { Link, router } from "expo-router";
+import { useFonts } from "expo-font";
+import { router } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  ActivityIndicator,
+  Animated,
   StyleSheet,
   Text,
-  View,
-  Image,
   TouchableOpacity,
-  Animated,
+  View,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
-import { useFonts } from "expo-font";
+import { useAuth } from "./context/AuthContext";
 
 import Logo from "../assets/Cat Illustration.png"; // Adjust the path as necessary
 
 const Home = () => {
+  const { userEmail, isLoading, logout } = useAuth();
   const [fontsLoaded] = useFonts({
     "Atma-Bold": require("../assets/fonts/Atma Bold.ttf"), // doesn't work :(
   });
@@ -24,6 +26,14 @@ const Home = () => {
   const [browseHover, setBrowseHover] = useState(false);
   const [galleryHover, setGalleryHover] = useState(false);
 
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!isLoading && !userEmail) {
+      router.replace("/login");
+    }
+  }, [isLoading, userEmail]);
+
+  // Animation effect
   useEffect(() => {
     // Create a looping animation that goes up and down
     const startFloating = () => {
@@ -45,6 +55,21 @@ const Home = () => {
 
     startFloating();
   }, [floatAnimation]);
+
+  // Show loading screen while checking authentication
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#007AFF" />
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    );
+  }
+
+  // If not authenticated, don't render anything (will redirect)
+  if (!userEmail) {
+    return null;
+  }
 
   // Handle press button link
   const onPressButton = (buttonName) => {
@@ -91,7 +116,11 @@ const Home = () => {
       >
         <Text style={styles.buttonText}>Gallery</Text>
       </TouchableOpacity>
-      <Link href="/login">Login</Link>
+      <View style={styles.userInfo}>
+        <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+          <Text style={styles.logoutButtonText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -143,6 +172,31 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "black",
     fontSize: 18,
+    fontWeight: "600",
+  },
+  loadingText: {
+    fontSize: 16,
+    color: "black",
+    marginTop: 16,
+  },
+  userInfo: {
+    marginTop: 20,
+    alignItems: "center",
+  },
+  userEmail: {
+    fontSize: 16,
+    color: "black",
+    marginBottom: 10,
+  },
+  logoutButton: {
+    backgroundColor: "#FF6D6D",
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  logoutButtonText: {
+    color: "white",
+    fontSize: 14,
     fontWeight: "600",
   },
 });

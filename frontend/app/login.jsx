@@ -1,17 +1,59 @@
+import { Link, router } from "expo-router";
+import React, { useState } from "react";
 import {
+  ActivityIndicator,
+  Alert,
   StyleSheet,
   Text,
-  View,
   TextInput,
   TouchableOpacity,
+  View,
 } from "react-native";
-import { Link } from "expo-router";
-import React, { useState } from "react";
+import { useAuth } from "./context/AuthContext";
 
 const Login = () => {
+  const address = "https://ef7cb4d3179c.ngrok-free.app";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+
+  const signIn = async () => {
+    if (!email || !password) {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await fetch(address + "/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email, password: password }),
+      });
+      const data = await response.json();
+      console.log(data);
+
+      if (data.status === "success") {
+        await login(email);
+        router.replace("/");
+      } else {
+        Alert.alert("Error", data.message || "Login failed");
+        setEmail("");
+        setPassword("");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      Alert.alert("Error", "Network error. Please try again.");
+      setEmail("");
+      setPassword("");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -49,8 +91,19 @@ const Login = () => {
           <Text style={styles.checkboxLabel}>View password</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.signInButton}>
-          <Text style={styles.signInButtonText}>Sign In</Text>
+        <TouchableOpacity
+          style={[
+            styles.signInButton,
+            isLoading && styles.signInButtonDisabled,
+          ]}
+          onPress={signIn}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <ActivityIndicator size="small" color="#6D9BFF" />
+          ) : (
+            <Text style={styles.signInButtonText}>Sign In</Text>
+          )}
         </TouchableOpacity>
         <Text style={styles.label}>
           Don't have an account?{" "}
@@ -160,6 +213,9 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
     fontWeight: "600",
+  },
+  signInButtonDisabled: {
+    backgroundColor: "#ccc",
   },
   registerButton: {
     backgroundColor: "transparent",

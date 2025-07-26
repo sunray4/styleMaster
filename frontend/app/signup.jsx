@@ -1,19 +1,66 @@
+import { Link, router } from "expo-router";
+import React, { useState } from "react";
 import {
+  ActivityIndicator,
+  Alert,
   StyleSheet,
   Text,
-  View,
   TextInput,
   TouchableOpacity,
+  View,
 } from "react-native";
-import React, { useState } from "react";
-import { Link } from "expo-router";
+import { useAuth } from "./context/AuthContext";
 
 const Signup = () => {
+  const address = "https://ef7cb4d3179c.ngrok-free.app";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+
+  const signUp = async () => {
+    if (!email || !password || !confirmPassword) {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await fetch(address + "/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email, password: password }),
+      });
+      const data = await response.json();
+      console.log(data);
+      if (data.status === "success") {
+        await login(email);
+        router.replace("/");
+      } else {
+        Alert.alert("Error", "Error signing up: " + data.message);
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+      }
+    } catch (error) {
+      console.error("Error signing up:", error);
+      Alert.alert("Error", "Error signing up: " + error);
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -75,8 +122,19 @@ const Signup = () => {
           <Text style={styles.checkboxLabel}>View password</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.registerButton}>
-          <Text style={styles.registerButtonText}>Register</Text>
+        <TouchableOpacity
+          style={[
+            styles.registerButton,
+            isLoading && styles.registerButtonDisabled,
+          ]}
+          onPress={signUp}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <ActivityIndicator size="small" color="#6D9BFF" />
+          ) : (
+            <Text style={styles.registerButtonText}>Sign Up</Text>
+          )}
         </TouchableOpacity>
 
         <Text style={styles.label}>
@@ -177,6 +235,9 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginBottom: 3,
     marginTop: 5,
+  },
+  registerButtonDisabled: {
+    backgroundColor: "#ccc",
   },
   registerButtonText: {
     color: "white",

@@ -13,11 +13,12 @@ import {
   View,
 } from "react-native";
 
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 
 const { width: screenWidth } = Dimensions.get("window");
 
 const Browse = () => {
+  const address = "https://ef7cb4d3179c.ngrok-free.app";
   const [showPreferenceModal, setShowPreferenceModal] = useState(true);
   const [selectedGender, setSelectedGender] = useState(null);
   const [selectedFormality, setSelectedFormality] = useState(null);
@@ -25,84 +26,6 @@ const Browse = () => {
   const [loadingMessage, setLoadingMessage] = useState("");
   const [carouselDataTops, setCarouselDataTops] = useState([]);
   const [carouselDataBottoms, setCarouselDataBottoms] = useState([]);
-
-  // Sample data for carousel - 6 items
-  const carouselData1 = [
-    {
-      id: 1,
-      title: "Outfit 1",
-      image: "../../backend/images/tops/tops_1.jpg",
-    },
-    {
-      id: 2,
-      title: "Outfit 2",
-      image:
-        "https://image.hm.com/assets/hm/a1/b2/a1b2c3d4e5f6789012345678901234567890abcd.jpg?imwidth=657",
-    },
-    {
-      id: 3,
-      title: "Outfit 3",
-      image:
-        "https://image.hm.com/assets/hm/c3/d4/c3d4e5f6789012345678901234567890abcdef12.jpg?imwidth=657",
-    },
-    {
-      id: 4,
-      title: "Outfit 4",
-      image:
-        "https://image.hm.com/assets/hm/e5/f6/e5f6789012345678901234567890abcdef123456.jpg?imwidth=657",
-    },
-    {
-      id: 5,
-      title: "Outfit 5",
-      image:
-        "https://image.hm.com/assets/hm/g7/h8/g7h8901234567890abcdef123456789012345678.jpg?imwidth=657",
-    },
-    {
-      id: 6,
-      title: "Outfit 6",
-      image:
-        "https://image.hm.com/assets/hm/i9/j0/i9j0abcdef123456789012345678901234567890.jpg?imwidth=657",
-    },
-  ];
-
-  const carouselData2 = [
-    {
-      id: 7,
-      title: "Style A",
-      image:
-        "https://image.hm.com/assets/hm/k1/l2/k1l2m3n4o5p6789012345678901234567890abcd.jpg?imwidth=657",
-    },
-    {
-      id: 8,
-      title: "Style B",
-      image:
-        "https://image.hm.com/assets/hm/m3/n4/m3n4o5p6q7r8901234567890abcdef123456789.jpg?imwidth=657",
-    },
-    {
-      id: 9,
-      title: "Style C",
-      image:
-        "https://image.hm.com/assets/hm/o5/p6/o5p6q7r8s9t0123456789abcdef123456789012.jpg?imwidth=657",
-    },
-    {
-      id: 10,
-      title: "Style D",
-      image:
-        "https://image.hm.com/assets/hm/q7/r8/q7r8s9t0u1v2345678901234567890abcdef123.jpg?imwidth=657",
-    },
-    {
-      id: 11,
-      title: "Style E",
-      image:
-        "https://image.hm.com/assets/hm/s9/t0/s9t0u1v2w3x4567890123456789abcdef123456.jpg?imwidth=657",
-    },
-    {
-      id: 12,
-      title: "Style F",
-      image:
-        "https://image.hm.com/assets/hm/u1/v2/u1v2w3x4y5z6789012345678901234567890ab.jpg?imwidth=657",
-    },
-  ];
 
   const renderCarouselItem = ({ item }) => (
     <TouchableOpacity style={styles.carouselItem}>
@@ -125,20 +48,23 @@ const Browse = () => {
     setLoadingMessage("Loading recommendations...");
 
     try {
-      const response = await fetch("http://192.168.1.120:8000/scrape_images", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          gender: selectedGender,
-          formality: selectedFormality,
-        }),
-      });
+      const response = await fetch(
+        address +
+          "/scrape_images?gender=" +
+          selectedGender +
+          "&formality=" +
+          selectedFormality,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.status === 200) {
         setLoadingMessage("Styles fetched!!");
-        responseData = await response.json();
+        const responseData = await response.json();
 
         // Convert base64 data to carousel format
         const topsData = responseData.data.tops.map((item, index) => ({
@@ -156,16 +82,12 @@ const Browse = () => {
         console.log("Received tops:", topsData.length);
         console.log("Received bottoms:", bottomsData.length);
         console.log(
-          "Full response data:",
-          JSON.stringify(responseData.data, null, 2)
-        );
-        console.log(
           "Sample top image:",
-          topsData[0]?.image?.substring(0, 50) + "..."
+          topsData[0]?.image?.substring(0, 10) + "..."
         );
         console.log(
           "Sample bottom image:",
-          bottomsData[0]?.image?.substring(0, 50) + "..."
+          bottomsData[0]?.image?.substring(0, 10) + "..."
         );
 
         // Update state with the new data
@@ -220,14 +142,13 @@ const Browse = () => {
       </View>
     );
   };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Fixed Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.homeButton}>
-          <Link href="/" style={styles.homeButtonText}>
-            ← Home
-          </Link>
+        <TouchableOpacity onPress={() => router.push("/")}>
+          <Text style={styles.homeButtonText}>← Home</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Browse</Text>
         <View style={styles.placeholder} />
@@ -235,12 +156,11 @@ const Browse = () => {
 
       {/* Main Browse Content - Only visible after preferences are set */}
       <View style={styles.content}>
-        <Text style={styles.carouselHeader}>Recommended for you</Text>
         {/* Carousel Section */}
         <View style={styles.carouselContainer}>
           <FlatList
             data={
-              carouselDataTops.length > 0 ? carouselDataTops : carouselData1
+              carouselDataTops 
             }
             renderItem={renderCarouselItem}
             keyExtractor={(item) => item.id.toString()}
@@ -257,9 +177,7 @@ const Browse = () => {
         <View style={styles.carouselContainer}>
           <FlatList
             data={
-              carouselDataBottoms.length > 0
-                ? carouselDataBottoms
-                : carouselData2
+              carouselDataBottoms
             }
             renderItem={renderCarouselItem}
             keyExtractor={(item) => item.id.toString()}
@@ -286,66 +204,76 @@ const Browse = () => {
       {/* Preference Modal Popup */}
       <Modal
         visible={showPreferenceModal}
-        animationType="slide"
         transparent={false}
         onRequestClose={() => setShowPreferenceModal(false)}
       >
         <SafeAreaView style={styles.modalFullScreen}>
-          <ScrollView
-            style={styles.modalScrollContainer}
-            showsVerticalScrollIndicator={false}
-          >
-            <View style={styles.modalContent}>
-              {isLoading ? (
-                // Loading state
-                <View style={styles.loadingContainer}>
-                  {loadingMessage === "Loading recommendations..." ? (
-                    <ActivityIndicator size="large" color="#007AFF" />
-                  ) : null}
-                  <Text style={styles.loadingText}>{loadingMessage}</Text>
-                </View>
-              ) : (
-                // Normal content
-                <>
-                  {/* Header */}
-                  <Link href="/" style={styles.homeButton}>
-                    <Text style={styles.homeButtonText}>← Home</Text>
-                  </Link>
-                  <Text style={styles.modalHeader}>
-                    Do you have any styles in mind today?
-                  </Text>
-
-                  {/* Gender Category */}
-                  <View style={styles.categoryContainer}>
-                    <Text style={styles.categoryTitle}>Gender</Text>
-                    {renderOptionButtons(
-                      ["All", "Female", "Male"],
-                      selectedGender,
-                      setSelectedGender
-                    )}
+          <View style={styles.modalContainer}>
+            <ScrollView
+              style={styles.modalScrollContainer}
+              showsVerticalScrollIndicator={false}
+            >
+              <View style={styles.modalContent}>
+                {isLoading ? (
+                  // Loading state
+                  <View style={styles.loadingContainer}>
+                    {loadingMessage === "Loading recommendations..." ? (
+                      <ActivityIndicator size="large" color="#007AFF" />
+                    ) : null}
+                    <Text style={styles.loadingText}>{loadingMessage}</Text>
                   </View>
+                ) : (
+                  // Normal content
+                  <>
+                    {/* Header */}
+                    <TouchableOpacity
+                      onPress={() => {
+                        router.push("/");
+                        setShowPreferenceModal(false);
+                      }}
+                    >
+                      <Text
+                        style={[styles.homeButtonText, { marginBottom: 16 }]}
+                      >
+                        ← Home
+                      </Text>
+                    </TouchableOpacity>
+                    <Text style={styles.modalHeader}>
+                      Do you have any styles in mind today?
+                    </Text>
 
-                  {/* Formality Category */}
-                  <View style={styles.categoryContainer}>
-                    <Text style={styles.categoryTitle}>Formality</Text>
-                    {renderOptionButtons(
-                      ["None", "Casual", "Formal"],
-                      selectedFormality,
-                      setSelectedFormality
-                    )}
-                  </View>
+                    {/* Gender Category */}
+                    <View style={styles.categoryContainer}>
+                      <Text style={styles.categoryTitle}>Gender</Text>
+                      {renderOptionButtons(
+                        ["All", "Female", "Male"],
+                        selectedGender,
+                        setSelectedGender
+                      )}
+                    </View>
 
-                  {/* Done Button */}
-                  <TouchableOpacity
-                    style={styles.doneButton}
-                    onPress={handleDone}
-                  >
-                    <Text style={styles.doneButtonText}>Done!</Text>
-                  </TouchableOpacity>
-                </>
-              )}
-            </View>
-          </ScrollView>
+                    {/* Formality Category */}
+                    <View style={styles.categoryContainer}>
+                      <Text style={styles.categoryTitle}>Formality</Text>
+                      {renderOptionButtons(
+                        ["None", "Casual", "Formal"],
+                        selectedFormality,
+                        setSelectedFormality
+                      )}
+                    </View>
+
+                    {/* Done Button */}
+                    <TouchableOpacity
+                      style={styles.doneButton}
+                      onPress={handleDone}
+                    >
+                      <Text style={styles.doneButtonText}>Done!</Text>
+                    </TouchableOpacity>
+                  </>
+                )}
+              </View>
+            </ScrollView>
+          </View>
         </SafeAreaView>
       </Modal>
     </SafeAreaView>
@@ -379,10 +307,13 @@ const styles = StyleSheet.create({
   },
   homeButton: {
     padding: 8,
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   homeButtonText: {
     fontSize: 16,
-    color: "#007AFF",
+    color: "black",
     fontWeight: "600",
   },
   headerTitle: {
@@ -417,6 +348,8 @@ const styles = StyleSheet.create({
   modalFullScreen: {
     flex: 1,
     backgroundColor: "#FFC688",
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalOverlay: {
     flex: 1,
@@ -426,10 +359,10 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalContainer: {
-    backgroundColor: "#FFC688",
+    backgroundColor: "#FAE7FF",
     borderRadius: 20,
-    width: "100%",
-    maxHeight: "85%",
+    width: "90%", // 90% of screen width
+    height: "60%", // 60% of screen height
     elevation: 10,
     shadowColor: "#000",
     shadowOffset: {
@@ -444,7 +377,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     padding: 30,
-    paddingTop: 50,
+    paddingTop: 30,
   },
   modalHeader: {
     fontSize: 22,
@@ -469,7 +402,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   optionButton: {
-    backgroundColor: "white",
+    backgroundColor: "#FFBEBE",
     borderRadius: 25,
     borderWidth: 2,
     borderColor: "#E0E0E0",
