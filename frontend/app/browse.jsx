@@ -483,7 +483,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FAE7FF",
     borderRadius: 20,
     width: "90%", // 90% of screen width
-    height: "60%", // 60% of screen height
+    height: "70%", // 70% of screen height
     elevation: 10,
     shadowColor: "#000",
     shadowOffset: {
@@ -639,7 +639,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   carouselContent: {
-    paddingHorizontal: (screenWidth - screenWidth * 0.6) / 2.9,
+    paddingHorizontal: (screenWidth - screenWidth * 0.6) / 2.6,
   },
   carouselItem: {
     width: screenWidth * 0.6,
@@ -684,7 +684,7 @@ const styles = StyleSheet.create({
     top: 60,
     left: 20,
     right: 20,
-    backgroundColor: "#70ff70",
+    backgroundColor: "#A6FFA6",
     borderRadius: 8,
     padding: 12,
     zIndex: 1000,

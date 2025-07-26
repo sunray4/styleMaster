@@ -1,7 +1,7 @@
 import { router, Link } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { useFonts, Atma_600SemiBold } from '@expo-google-fonts/atma';
-import { Nunito_300Light } from '@expo-google-fonts/nunito';
+import { Nunito_900Black, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
 import {
   ActivityIndicator,
   Animated,
@@ -105,7 +105,8 @@ const Home = () => {
 
   let [fontsLoaded] = useFonts({
     Atma_600SemiBold,
-    Nunito_300Light,
+    Nunito_900Black,
+    Nunito_600SemiBold,
   });
 
   if (!fontsLoaded) {
@@ -174,13 +175,6 @@ const Home = () => {
       >
         <Text style={styles.buttonText}>Gallery</Text>
       </TouchableOpacity>
-      <View>
-        <Text>
-          <Link href="/testing" style={styles.signUpText}>
-            Delete later (testing)
-          </Link>
-          </Text>
-                </View>
       <View style={styles.userInfo}>
         <TouchableOpacity style={styles.logoutButton} onPress={logout}>
           <Text style={styles.logoutButtonText}>Logout</Text>
@@ -217,13 +211,13 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 4,
+      height: 12,
     },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    shadowOpacity: 1.0,
+    shadowRadius: 16,
+    elevation: 15,
     borderWidth: 2,
-    borderColor: "black",
+    borderColor: "#ffe474",
   },
   image: {
     width: "100%",
@@ -235,16 +229,16 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderWidth: 1,
     borderColor: "#4F7A4B",
-    padding: 16,
+    padding: 14,
     width: "70%",
     alignItems: "center",
     marginBottom: 16,
   },
   buttonText: {
     color: "white",
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "600",
-    fontFamily: "Nunito_300Light",
+    fontFamily: "Nunito_900Black",
   },
   loadingText: {
     fontSize: 16,
@@ -275,5 +269,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 14,
     fontWeight: "600",
+    fontFamily: "Nunito_600SemiBold",
   },
 });

@@ -133,7 +133,15 @@ def save_fit():
     if not img_top or not img_bottom:
         return jsonify({'status': 'error', 'message': 'Both top and bottom images are required'}), 400
 
-    users.update_one({"username": email}, {"$addToSet": {"fits": {"top": img_top, "bottom": img_bottom}}})
+    if not img_top.startswith('data:image/') or not img_bottom.startswith('data:image/'):
+        return jsonify({'status': 'error', 'message': 'Invalid image format. Expected data:image/jpeg;base64,...'}), 400
+
+    try:
+        users.update_one({"username": email}, {"$addToSet": {"fits": {"top": img_top, "bottom": img_bottom}}})
+        print(f"Fit saved for user: {email}")
+    except Exception as e:
+        print(f"Error saving fit: {e}")
+        return jsonify({'status': 'error', 'message': 'Error saving fit'}), 500
 
     return jsonify({'status': 'success', 'message': 'Image uploaded successfully'}), 200
 

@@ -20,7 +20,7 @@ const Gallery = () => {
 
   const getGalleryData = async () => {
     // Commenting out backend fetch temporarily
-    /*
+
     try {
       const response = await fetch(address + "/gallery", {
         method: "GET",
@@ -30,8 +30,6 @@ const Gallery = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        //const images = data.images;
-        //return images;
         setImagesTops(data.imagesTops || []);
         setImagesBottoms(data.imagesBottoms || []);
       } else {
@@ -42,44 +40,43 @@ const Gallery = () => {
     } finally {
       setLoading(false);
     }
-    */
 
     // Hardcoded sample data
-    const sampleImageUrl =
-      "https://image.hm.com/assets/hm/44/64/4464618446c394fe79392b81ca8a9eb4e431011f.jpg?imwidth=657";
-    const sampleImageUrl2 =
-      "https://image.hm.com/assets/hm/e6/4b/e64bb0639e54f8fe4d3ea1701f8a36aecb41b941.jpg?imwidth=2160";
-    const sampleImageUrl3 =
-      "https://image.hm.com/assets/hm/40/f1/40f1d72540c2b82e707251f4d4aafc28817449c0.jpg?imwidth=2160";
-    const sampleImageUrl4 =
-      "https://image.hm.com/assets/hm/50/97/5097ac96619bde92de285195f19e3d4ffa642974.jpg?imwidth=2160";
-    const sampleImageUrl5 =
-      "https://image.hm.com/assets/hm/2f/a9/2fa91543ffcce7807669a8b830f3f1d34563ebe0.jpg?imwidth=2160";
+    // const sampleImageUrl =
+    //   "https://image.hm.com/assets/hm/44/64/4464618446c394fe79392b81ca8a9eb4e431011f.jpg?imwidth=657";
+    // const sampleImageUrl2 =
+    //   "https://image.hm.com/assets/hm/e6/4b/e64bb0639e54f8fe4d3ea1701f8a36aecb41b941.jpg?imwidth=2160";
+    // const sampleImageUrl3 =
+    //   "https://image.hm.com/assets/hm/40/f1/40f1d72540c2b82e707251f4d4aafc28817449c0.jpg?imwidth=2160";
+    // const sampleImageUrl4 =
+    //   "https://image.hm.com/assets/hm/50/97/5097ac96619bde92de285195f19e3d4ffa642974.jpg?imwidth=2160";
+    // const sampleImageUrl5 =
+    //   "https://image.hm.com/assets/hm/2f/a9/2fa91543ffcce7807669a8b830f3f1d34563ebe0.jpg?imwidth=2160";
 
-    const sampleTops = [
-      sampleImageUrl,
-      sampleImageUrl4,
-      sampleImageUrl,
-      sampleImageUrl,
-      sampleImageUrl,
-      sampleImageUrl,
-    ];
+    // const sampleTops = [
+    //   sampleImageUrl,
+    //   sampleImageUrl4,
+    //   sampleImageUrl,
+    //   sampleImageUrl,
+    //   sampleImageUrl,
+    //   sampleImageUrl,
+    // ];
 
-    const sampleBottoms = [
-      sampleImageUrl2,
-      sampleImageUrl3,
-      sampleImageUrl5,
-      sampleImageUrl,
-      sampleImageUrl,
-      sampleImageUrl,
-    ];
+    // const sampleBottoms = [
+    //   sampleImageUrl2,
+    //   sampleImageUrl3,
+    //   sampleImageUrl5,
+    //   sampleImageUrl,
+    //   sampleImageUrl,
+    //   sampleImageUrl,
+    // ];
 
-    // Simulate loading delay
-    setTimeout(() => {
-      setImagesTops(sampleTops);
-      setImagesBottoms(sampleBottoms);
-      setLoading(false);
-    }, 1000);
+    // // Simulate loading delay
+    // setTimeout(() => {
+    //   setImagesTops(sampleTops);
+    //   setImagesBottoms(sampleBottoms);
+    //   setLoading(false);
+    // }, 1000);
   };
 
   useEffect(() => {
