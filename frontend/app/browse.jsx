@@ -1,17 +1,17 @@
+import React, { useState } from "react";
 import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  SafeAreaView,
-  Modal,
-  ScrollView,
-  Image,
   ActivityIndicator,
   Dimensions,
   FlatList,
+  Image,
+  Modal,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import React, { useState } from "react";
 
 import { Link, router } from "expo-router";
 
@@ -23,9 +23,8 @@ const Browse = () => {
   const [selectedFormality, setSelectedFormality] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
-
-  let carouselDataTops = [];
-  let carouselDataBottoms = [];
+  const [carouselDataTops, setCarouselDataTops] = useState([]);
+  const [carouselDataBottoms, setCarouselDataBottoms] = useState([]);
 
   // Sample data for carousel - 6 items
   const carouselData1 = [
@@ -107,7 +106,11 @@ const Browse = () => {
 
   const renderCarouselItem = ({ item }) => (
     <TouchableOpacity style={styles.carouselItem}>
-      <Image source={{ uri: item.image }} style={styles.carouselImage} />
+      <Image
+        source={{ uri: item.image }}
+        style={styles.carouselImage}
+        resizeMode="cover"
+      />
       <Text style={styles.carouselTitle}>{item.title}</Text>
     </TouchableOpacity>
   );
@@ -122,7 +125,7 @@ const Browse = () => {
     setLoadingMessage("Loading recommendations...");
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/scrape_images", {
+      const response = await fetch("http://192.168.1.120:8000/scrape_images", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -136,12 +139,43 @@ const Browse = () => {
       if (response.status === 200) {
         setLoadingMessage("Styles fetched!!");
         responseData = await response.json();
-        carouselDataTops = responseData.data.tops;
-        carouselDataBottoms = responseData.data.bottoms;
+
+        // Convert base64 data to carousel format
+        const topsData = responseData.data.tops.map((item, index) => ({
+          id: index + 1,
+          title: `Top ${index + 1}`,
+          image: item.data,
+        }));
+
+        const bottomsData = responseData.data.bottoms.map((item, index) => ({
+          id: index + 100, // Different ID range for bottoms
+          title: `Bottom ${index + 1}`,
+          image: item.data,
+        }));
+
+        console.log("Received tops:", topsData.length);
+        console.log("Received bottoms:", bottomsData.length);
+        console.log(
+          "Full response data:",
+          JSON.stringify(responseData.data, null, 2)
+        );
+        console.log(
+          "Sample top image:",
+          topsData[0]?.image?.substring(0, 50) + "..."
+        );
+        console.log(
+          "Sample bottom image:",
+          bottomsData[0]?.image?.substring(0, 50) + "..."
+        );
+
+        // Update state with the new data
+        setCarouselDataTops(topsData);
+        setCarouselDataBottoms(bottomsData);
+
         setTimeout(() => {
           setIsLoading(false);
           setShowPreferenceModal(false);
-        }, 3000);
+        }, 1000);
       } else {
         setLoadingMessage("Your request couldn't be processed :(");
         setTimeout(() => {
@@ -222,7 +256,11 @@ const Browse = () => {
         {/* Second Carousel Section */}
         <View style={styles.carouselContainer}>
           <FlatList
-            data={carouselData2}
+            data={
+              carouselDataBottoms.length > 0
+                ? carouselDataBottoms
+                : carouselData2
+            }
             renderItem={renderCarouselItem}
             keyExtractor={(item) => item.id.toString()}
             horizontal={true}

@@ -6,6 +6,12 @@ import os
 def scrape_images(gender, formality):
     # gender: men/women/all
     # formality: no specification (formality == "none"), formal, casual
+    
+    # Convert to lowercase for consistency
+    gender = gender.lower()
+    formality = formality.lower()
+    
+    print(f"Debug: gender='{gender}', formality='{formality}'")
 
     for filename in os.listdir('images/tops'):
         file_path = os.path.join('images/tops', filename)
@@ -22,26 +28,33 @@ def scrape_images(gender, formality):
             page = browser.new_page()
             
             # TOPS
-            link = ""
-            if formality == "casual" and gender == "men":
-                link = "https://www2.hm.com/en_ca/search-results.html?q=casual&productTypes=Top,T-shirt,Shirt&image=stillLife&department=men_all&sort=RELEVANCE&page=1"
-            elif formality == "casual" and gender == "women":
-                link = "https://www2.hm.com/en_ca/search-results.html?q=casual&productTypes=Top,T-shirt,Vest,Knit+Sweater,Cardigan&image=stillLife&department=ladies_all&sort=RELEVANCE&page=2"
-            elif formality == "casual" and "gender" == "all":
-                link = "https://www2.hm.com/en_ca/search-results.html?q=casual&productTypes=Blouse,Cardigan,Knit+Sweater,T-shirt,Top,Vest&image=stillLife&sort=RELEVANCE&page=1"
-            elif formality == "formal" and gender == "men":
-                link = "https://www2.hm.com/en_ca/search-results.html?q=formal&image=stillLife&department=men_all&sort=RELEVANCE&page=1"    
-            elif formality == "formal" and gender == "women":
-                link = "https://www2.hm.com/en_ca/search-results.html?q=formal%20shirt&image=stillLife&department=ladies_all&page=1"
+            topLink = ""
+            if formality == "casual" and gender == "male":
+                topLink = "https://www2.hm.com/en_ca/search-results.html?q=casual&productTypes=Top,T-shirt,Shirt&image=stillLife&department=men_all&sort=RELEVANCE&page=1"
+            elif formality == "casual" and gender == "female":
+                topLink  = "https://www2.hm.com/en_ca/search-results.html?q=casual&productTypes=Top,T-shirt,Vest,Knit+Sweater,Cardigan&image=stillLife&department=ladies_all&sort=RELEVANCE&page=2"
+            elif formality == "casual" and gender == "all":
+                topLink = "https://www2.hm.com/en_ca/search-results.html?q=casual&productTypes=Blouse,Cardigan,Knit+Sweater,T-shirt,Top,Vest&image=stillLife&sort=RELEVANCE&page=1"
+            elif formality == "formal" and gender == "male":
+                topLink = "https://www2.hm.com/en_ca/search-results.html?q=formal&image=stillLife&department=men_all&sort=RELEVANCE&page=1"    
+            elif formality == "formal" and gender == "female":
+                topLink = "https://www2.hm.com/en_ca/search-results.html?q=formal%20shirt&image=stillLife&department=ladies_all&page=1"
             elif formality == "formal" and gender == "all":
-                link = "https://www2.hm.com/en_ca/search-results.html?q=formal&productTypes=Blazer,Shirt&customerGroups=Man,Woman&image=stillLife&sort=RELEVANCE&page=1"
-            elif formality == "none" and gender == "men":
-                link = "https://www2.hm.com/en_ca/search-results.html?q=men&productTypes=Blazer,Cardigan,Coat,Jacket,Knit+Sweater,Pajama+Top,Shirt,T-shirt,Top,Vest&image=stillLife&sort=RELEVANCE&page=2"
-            elif formality == "none" and gender == "women":
-                link = "https://www2.hm.com/en_ca/search-results.html?q=women&productTypes=Cardigan,Coat,Jacket,Nightshirt,Pajama+Tank+Top,Pajama+Top,Shirt,T-shirt,Top,Vest&image=stillLife&department=ladies_all&sort=RELEVANCE&page=6"
+                topLink = "https://www2.hm.com/en_ca/search-results.html?q=formal&productTypes=Blazer,Shirt&customerGroups=Man,Woman&image=stillLife&sort=RELEVANCE&page=1"
+            elif formality == "none" and gender == "male":
+                topLink = "https://www2.hm.com/en_ca/search-results.html?q=men&productTypes=Blazer,Cardigan,Coat,Jacket,Knit+Sweater,Pajama+Top,Shirt,T-shirt,Top,Vest&image=stillLife&sort=RELEVANCE&page=2"
+            elif formality == "none" and gender == "female":
+                topLink = "https://www2.hm.com/en_ca/search-results.html?q=women&productTypes=Cardigan,Coat,Jacket,Nightshirt,Pajama+Tank+Top,Pajama+Top,Shirt,T-shirt,Top,Vest&image=stillLife&department=ladies_all&sort=RELEVANCE&page=6"
             elif formality == "none" and gender == "all":
-                link = "https://www2.hm.com/en_ca/search-results.html?q=top&image=stillLife&department=all&sort=RELEVANCE&page=1"
-            page.goto(link)
+                topLink = "https://www2.hm.com/en_ca/search-results.html?q=top&image=stillLife&department=all&sort=RELEVANCE&page=1"
+            
+            # Fallback if no condition matches
+            if not topLink:
+                print(f"No matching condition found for gender='{gender}', formality='{formality}'")
+                topLink = "https://www2.hm.com/en_ca/search-results.html?q=casual&productTypes=Blouse,Cardigan,Knit+Sweater,T-shirt,Top,Vest&image=stillLife&sort=RELEVANCE&page=1"
+            
+            print(f"Using link: {topLink}")
+            page.goto(topLink)
             page.wait_for_selector("ul > li")
             for _ in range(5):
                 page.mouse.wheel(0, 2000)
@@ -59,25 +72,33 @@ def scrape_images(gender, formality):
                  idx += 1
 
             #BOTTOMS
-            if formality == "casual" and gender == "men":
-                link = "https://www2.hm.com/en_ca/search-results.html?q=casual&productTypes=Jeans,Pajama+Pants,Pants,Shorts&image=stillLife&department=men_all&sort=RELEVANCE&page=5"
-            elif formality == "casual" and gender == "women":
-                link = "https://www2.hm.com/en_ca/search-results.html?q=casual&productTypes=Jeans,Pajama+Pants,Pants,Shorts,Skirt,Skort,Leggings&image=stillLife&department=ladies_all&sort=RELEVANCE&page=1"
+            bottomLink = ""
+            if formality == "casual" and gender == "male":
+                bottomLink = "https://www2.hm.com/en_ca/search-results.html?q=casual&productTypes=Jeans,Pajama+Pants,Pants,Shorts&image=stillLife&department=men_all&sort=RELEVANCE&page=5"
+            elif formality == "casual" and gender == "female":
+                bottomLink = "https://www2.hm.com/en_ca/search-results.html?q=casual&productTypes=Jeans,Pajama+Pants,Pants,Shorts,Skirt,Skort,Leggings&image=stillLife&department=ladies_all&sort=RELEVANCE&page=1"
             elif formality == "casual" and gender == "all":
-                link = "https://www2.hm.com/en_ca/search-results.html?q=casual&productTypes=Jeans,Pajama+Pants,Pants,Shorts,Skirt,Skort,Leggings&image=stillLife&department=all&sort=RELEVANCE&page=3"
-            elif formality == "formal" and gender == "men":
-                link = "https://www2.hm.com/en_ca/search-results.html?q=formal%20pant&image=stillLife&department=men_all&page=1"
-            elif formality == "formal" and gender == "women":
-                link = "https://www2.hm.com/en_ca/search-results.html?q=formal&productTypes=Pants&image=stillLife&department=ladies_all&sort=RELEVANCE&page=1"
+                bottomLink = "https://www2.hm.com/en_ca/search-results.html?q=casual&productTypes=Jeans,Pajama+Pants,Pants,Shorts,Skirt,Skort,Leggings&image=stillLife&department=all&sort=RELEVANCE&page=3"
+            elif formality == "formal" and gender == "male":
+                bottomLink = "https://www2.hm.com/en_ca/search-results.html?q=formal%20pant&image=stillLife&department=men_all&page=1"
+            elif formality == "formal" and gender == "female":
+                bottomLink = "https://www2.hm.com/en_ca/search-results.html?q=formal&productTypes=Pants&image=stillLife&department=ladies_all&sort=RELEVANCE&page=1"
             elif formality == "formal" and gender == "all":
-                link = "https://www2.hm.com/en_ca/search-results.html?q=formal&productTypes=Pants&customerGroups=Woman,Man&image=stillLife&department=all&sort=RELEVANCE&page=1"
-            elif formality == "none" and gender == "men":
-                link = "https://www2.hm.com/en_ca/search-results.html?q=men&clothingStyles=Tuxedo+Pants,Wide+leg,Trashed,Track+Pants,Tapered,Tailored+Shorts,Sweatshorts,Sweatpants,Suit+Pants,Straight+Leg,Slacks,Pull-on+Pants,Cycling+Shorts,Cargo&image=stillLife&sort=RELEVANCE&page=3"
-            elif formality == "none" and gender == "women":
-                link = "https://www2.hm.com/en_ca/search-results.html?q=women&productTypes=Jeans,Leggings,Pajama+Pants,Pants,Shorts,Skirt,Skort,Tights&image=stillLife&sort=RELEVANCE&page=11"
+                bottomLink = "https://www2.hm.com/en_ca/search-results.html?q=formal&productTypes=Pants&customerGroups=Woman,Man&image=stillLife&department=all&sort=RELEVANCE&page=1"
+            elif formality == "none" and gender == "male":
+                bottomLink = "https://www2.hm.com/en_ca/search-results.html?q=men&clothingStyles=Tuxedo+Pants,Wide+leg,Trashed,Track+Pants,Tapered,Tailored+Shorts,Sweatshorts,Sweatpants,Suit+Pants,Straight+Leg,Slacks,Pull-on+Pants,Cycling+Shorts,Cargo&image=stillLife&sort=RELEVANCE&page=3"
+            elif formality == "none" and gender == "female":
+                bottomLink = "https://www2.hm.com/en_ca/search-results.html?q=women&productTypes=Jeans,Leggings,Pajama+Pants,Pants,Shorts,Skirt,Skort,Tights&image=stillLife&sort=RELEVANCE&page=11"
             elif formality == "none" and gender == "all":
-                link = "https://www2.hm.com/en_ca/search-results.html?q=clothes&customerGroups=Woman,Man&productTypes=Jeans,Leggings,Pajama+Pants,Pants,Shorts,Skirt,Skort&image=stillLife&sort=RELEVANCE&page=3"
-            page.goto(link)
+                bottomLink = "https://www2.hm.com/en_ca/search-results.html?q=clothes&customerGroups=Woman,Man&productTypes=Jeans,Leggings,Pajama+Pants,Pants,Shorts,Skirt,Skort&image=stillLife&sort=RELEVANCE&page=3"
+            
+            # Fallback if no condition matches
+            if not bottomLink:
+                print(f"No matching condition found for bottoms - gender='{gender}', formality='{formality}'")
+                bottomLink = "https://www2.hm.com/en_ca/search-results.html?q=casual&productTypes=Jeans,Pajama+Pants,Pants,Shorts,Skirt,Skort,Leggings&image=stillLife&department=all&sort=RELEVANCE&page=3"
+            
+            print(f"Using bottoms link: {bottomLink}")
+            page.goto(bottomLink)
             page.wait_for_selector("ul > li")
             for _ in range(5):
                 page.mouse.wheel(0, 2000)
