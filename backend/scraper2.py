@@ -41,11 +41,11 @@ def scrape_images(gender, formality):
                 topLink = "https://www2.hm.com/en_ca/search-results.html?q=formal%20shirt&image=stillLife&department=ladies_all&page=1"
             elif formality == "formal" and gender == "all":
                 topLink = "https://www2.hm.com/en_ca/search-results.html?q=formal&productTypes=Blazer,Shirt&customerGroups=Man,Woman&image=stillLife&sort=RELEVANCE&page=1"
-            elif formality == "none" and gender == "male":
+            elif formality == "all" and gender == "male":
                 topLink = "https://www2.hm.com/en_ca/search-results.html?q=men&productTypes=Blazer,Cardigan,Coat,Jacket,Knit+Sweater,Pajama+Top,Shirt,T-shirt,Top,Vest&image=stillLife&sort=RELEVANCE&page=2"
-            elif formality == "none" and gender == "female":
+            elif formality == "all" and gender == "female":
                 topLink = "https://www2.hm.com/en_ca/search-results.html?q=women&productTypes=Cardigan,Coat,Jacket,Nightshirt,Pajama+Tank+Top,Pajama+Top,Shirt,T-shirt,Top,Vest&image=stillLife&department=ladies_all&sort=RELEVANCE&page=6"
-            elif formality == "none" and gender == "all":
+            elif formality == "all" and gender == "all":
                 topLink = "https://www2.hm.com/en_ca/search-results.html?q=top&image=stillLife&department=all&sort=RELEVANCE&page=1"
             
             # Fallback if no condition matches
@@ -85,11 +85,11 @@ def scrape_images(gender, formality):
                 bottomLink = "https://www2.hm.com/en_ca/search-results.html?q=formal&productTypes=Pants&image=stillLife&department=ladies_all&sort=RELEVANCE&page=1"
             elif formality == "formal" and gender == "all":
                 bottomLink = "https://www2.hm.com/en_ca/search-results.html?q=formal&productTypes=Pants&customerGroups=Woman,Man&image=stillLife&department=all&sort=RELEVANCE&page=1"
-            elif formality == "none" and gender == "male":
+            elif formality == "all" and gender == "male":
                 bottomLink = "https://www2.hm.com/en_ca/search-results.html?q=men&clothingStyles=Tuxedo+Pants,Wide+leg,Trashed,Track+Pants,Tapered,Tailored+Shorts,Sweatshorts,Sweatpants,Suit+Pants,Straight+Leg,Slacks,Pull-on+Pants,Cycling+Shorts,Cargo&image=stillLife&sort=RELEVANCE&page=3"
-            elif formality == "none" and gender == "female":
+            elif formality == "all" and gender == "female":
                 bottomLink = "https://www2.hm.com/en_ca/search-results.html?q=women&productTypes=Jeans,Leggings,Pajama+Pants,Pants,Shorts,Skirt,Skort,Tights&image=stillLife&sort=RELEVANCE&page=11"
-            elif formality == "none" and gender == "all":
+            elif formality == "all" and gender == "all":
                 bottomLink = "https://www2.hm.com/en_ca/search-results.html?q=clothes&customerGroups=Woman,Man&productTypes=Jeans,Leggings,Pajama+Pants,Pants,Shorts,Skirt,Skort&image=stillLife&sort=RELEVANCE&page=3"
             
             # Fallback if no condition matches

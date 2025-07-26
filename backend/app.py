@@ -118,21 +118,22 @@ def gallery():
         return jsonify({'status': 'error', 'message': 'No images found'}), 404
     return jsonify({'status': 'success', 'data': images}), 200
 
-@app.route('/save_img', methods=['POST'])
-def upload_image():
+@app.route('/save_fit', methods=['POST'])
+def save_fit():
+    print("Saving fit...")
     data = request.json
     if not data:
         return jsonify({'status': 'error', 'message': 'No JSON data provided'}), 400
     email = data.get('email')
     if not email:
         return jsonify({'status': 'error', 'message': 'Email is required'}), 400
-    img_top = data.get('img_top')
-    img_bottom = data.get('img_bottom')
+    img_top = data.get('top')
+    img_bottom = data.get('bottom')
 
     if not img_top or not img_bottom:
         return jsonify({'status': 'error', 'message': 'Both top and bottom images are required'}), 400
 
-    users.update_one({"username": email}, {"$addToSet": {"images": {"top": img_top, "bottom": img_bottom}}})
+    users.update_one({"username": email}, {"$addToSet": {"fits": {"top": img_top, "bottom": img_bottom}}})
 
     return jsonify({'status': 'success', 'message': 'Image uploaded successfully'}), 200
 

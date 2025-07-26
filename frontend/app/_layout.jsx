@@ -2,8 +2,12 @@ import { Stack } from "expo-router";
 import React from "react";
 import { StyleSheet } from "react-native";
 import { AuthProvider } from "./context/AuthContext";
+import { useFonts, Atma_600SemiBold } from '@expo-google-fonts/atma';
 
 const RootLayout = () => {
+  const [loaded] = useFonts( {
+    Atma: require("../assets/fonts/Atma Bold.ttf"),
+  })
   return (
     <AuthProvider>
       <Stack

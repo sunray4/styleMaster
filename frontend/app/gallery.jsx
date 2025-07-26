@@ -45,10 +45,16 @@ const Gallery = () => {
     */
 
     // Hardcoded sample data
-    const sampleImageUrl = "https://image.hm.com/assets/hm/44/64/4464618446c394fe79392b81ca8a9eb4e431011f.jpg?imwidth=657";
-    const sampleImageUrl2 = "https://image.hm.com/assets/hm/e6/4b/e64bb0639e54f8fe4d3ea1701f8a36aecb41b941.jpg?imwidth=2160";
-    const sampleImageUrl3 = "https://image.hm.com/assets/hm/40/f1/40f1d72540c2b82e707251f4d4aafc28817449c0.jpg?imwidth=2160";
-    const sampleImageUrl4 = "https://image.hm.com/assets/hm/50/97/5097ac96619bde92de285195f19e3d4ffa642974.jpg?imwidth=2160";
+    const sampleImageUrl =
+      "https://image.hm.com/assets/hm/44/64/4464618446c394fe79392b81ca8a9eb4e431011f.jpg?imwidth=657";
+    const sampleImageUrl2 =
+      "https://image.hm.com/assets/hm/e6/4b/e64bb0639e54f8fe4d3ea1701f8a36aecb41b941.jpg?imwidth=2160";
+    const sampleImageUrl3 =
+      "https://image.hm.com/assets/hm/40/f1/40f1d72540c2b82e707251f4d4aafc28817449c0.jpg?imwidth=2160";
+    const sampleImageUrl4 =
+      "https://image.hm.com/assets/hm/50/97/5097ac96619bde92de285195f19e3d4ffa642974.jpg?imwidth=2160";
+    const sampleImageUrl5 =
+      "https://image.hm.com/assets/hm/2f/a9/2fa91543ffcce7807669a8b830f3f1d34563ebe0.jpg?imwidth=2160";
 
     const sampleTops = [
       sampleImageUrl,
@@ -56,16 +62,16 @@ const Gallery = () => {
       sampleImageUrl,
       sampleImageUrl,
       sampleImageUrl,
-      sampleImageUrl
+      sampleImageUrl,
     ];
-    
+
     const sampleBottoms = [
       sampleImageUrl2,
       sampleImageUrl3,
+      sampleImageUrl5,
       sampleImageUrl,
       sampleImageUrl,
       sampleImageUrl,
-      sampleImageUrl
     ];
 
     // Simulate loading delay
@@ -81,9 +87,17 @@ const Gallery = () => {
   }, []);
 
   const renderImageGrid = () => {
-    console.log("Rendering grid with tops:", imagesTops.length, "bottoms:", imagesBottoms.length);
+    console.log(
+      "Rendering grid with tops:",
+      imagesTops.length,
+      "bottoms:",
+      imagesBottoms.length
+    );
 
-    if ((!imagesTops || imagesTops.length === 0) && (!imagesBottoms || imagesBottoms.length === 0)) {
+    if (
+      (!imagesTops || imagesTops.length === 0) &&
+      (!imagesBottoms || imagesBottoms.length === 0)
+    ) {
       return (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyText}>No images available</Text>
@@ -94,18 +108,18 @@ const Gallery = () => {
     // Create containers by pairing tops and bottoms
     const maxLength = Math.max(imagesTops.length, imagesBottoms.length);
     const containers = [];
-    
+
     for (let i = 0; i < maxLength; i++) {
       containers.push({
         id: i,
         top: imagesTops[i] || null,
-        bottom: imagesBottoms[i] || null
+        bottom: imagesBottoms[i] || null,
       });
     }
 
     const rows = [];
-    for (let i = 0; i < containers.length; i += 3) {
-      const rowContainers = containers.slice(i, i + 3);
+    for (let i = 0; i < containers.length; i += 2) {
+      const rowContainers = containers.slice(i, i + 2);
       rows.push(
         <View key={i} style={styles.imageRow}>
           {rowContainers.map((container, index) => (
@@ -117,7 +131,9 @@ const Gallery = () => {
                     source={{ uri: container.top }}
                     style={styles.gridImage}
                     resizeMode="cover"
-                    onError={(error) => console.error("Top image load error:", error)}
+                    onError={(error) =>
+                      console.error("Top image load error:", error)
+                    }
                     onLoad={() => console.log("Top image loaded successfully")}
                   />
                 ) : (
@@ -126,16 +142,20 @@ const Gallery = () => {
                   </View>
                 )}
               </View>
-              
+
               {/* Bottom Image */}
               <View style={[styles.imageContainer, { marginBottom: 0 }]}>
                 {container.bottom ? (
                   <Image
                     source={{ uri: container.bottom }}
-                    style={styles.gridImage}
+                    style={styles.gridImageBottom}
                     resizeMode="cover"
-                    onError={(error) => console.error("Bottom image load error:", error)}
-                    onLoad={() => console.log("Bottom image loaded successfully")}
+                    onError={(error) =>
+                      console.error("Bottom image load error:", error)
+                    }
+                    onLoad={() =>
+                      console.log("Bottom image loaded successfully")
+                    }
                   />
                 ) : (
                   <View style={styles.placeholderContainer}>
@@ -145,13 +165,16 @@ const Gallery = () => {
               </View>
             </View>
           ))}
-          
+
           {/* Fill empty slots in incomplete rows */}
-          {rowContainers.length < 3 &&
-            Array(3 - rowContainers.length)
+          {rowContainers.length < 2 &&
+            Array(2 - rowContainers.length)
               .fill(null)
               .map((_, index) => (
-                <View key={`empty-${i}-${index}`} style={styles.outfitContainer} />
+                <View
+                  key={`empty-${i}-${index}`}
+                  style={styles.outfitContainer}
+                />
               ))}
         </View>
       );
@@ -197,8 +220,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFC688",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E0E0E0",
+    // borderBottomWidth: 1,
+    // borderBottomColor: "#E0E0E0",
     elevation: 3,
     shadowColor: "#000",
     shadowOffset: {
@@ -257,16 +280,21 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   imageContainer: {
-    height: 120,
     marginBottom: 8,
     borderRadius: 8,
     backgroundColor: "#E0E0E0",
   },
   gridImage: {
     width: "100%",
-    height: "100%",
+    height: 170,
     borderRadius: 8,
-    resizeMode: "contain",
+    resizeMode: "cover",
+  },
+  gridImageBottom: {
+    width: "100%",
+    height: 250,
+    borderRadius: 8,
+    resizeMode: "cover",
   },
   placeholderContainer: {
     flex: 1,

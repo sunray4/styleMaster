@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Animated,
   Dimensions,
   FlatList,
   Image,
@@ -14,11 +15,22 @@ import {
 } from "react-native";
 
 import { router } from "expo-router";
+import { useAuth } from "./context/AuthContext";
 
 const { width: screenWidth } = Dimensions.get("window");
 
 const Browse = () => {
   const address = "https://ef7cb4d3179c.ngrok-free.app";
+
+  // Add defensive programming for useAuth
+  let userEmail = null;
+  try {
+    const auth = useAuth();
+    userEmail = auth.userEmail;
+  } catch (error) {
+    console.log("Auth context not available:", error);
+  }
+
   const [showPreferenceModal, setShowPreferenceModal] = useState(true);
   const [selectedGender, setSelectedGender] = useState(null);
   const [selectedFormality, setSelectedFormality] = useState(null);
@@ -26,6 +38,11 @@ const Browse = () => {
   const [loadingMessage, setLoadingMessage] = useState("");
   const [carouselDataTops, setCarouselDataTops] = useState([]);
   const [carouselDataBottoms, setCarouselDataBottoms] = useState([]);
+  const [currentTopIndex, setCurrentTopIndex] = useState(0);
+  const [currentBottomIndex, setCurrentBottomIndex] = useState(0);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState("");
+  const notificationAnimation = useRef(new Animated.Value(-100)).current;
 
   const renderCarouselItem = ({ item }) => (
     <TouchableOpacity style={styles.carouselItem}>
@@ -37,6 +54,39 @@ const Browse = () => {
       <Text style={styles.carouselTitle}>{item.title}</Text>
     </TouchableOpacity>
   );
+
+  const onViewableItemsChanged = ({ viewableItems }, setIndex) => {
+    if (viewableItems.length > 0) {
+      setIndex(viewableItems[0].index);
+    }
+  };
+
+  const viewabilityConfig = {
+    itemVisiblePercentThreshold: 50,
+  };
+
+  const showNotificationMessage = (message) => {
+    setNotificationMessage(message);
+    setShowNotification(true);
+
+    // Animate dropdown
+    Animated.timing(notificationAnimation, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+
+    setTimeout(() => {
+      // Animate back up
+      Animated.timing(notificationAnimation, {
+        toValue: -100,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => {
+        setShowNotification(false);
+      });
+    }, 1000);
+  };
 
   const handleDone = async () => {
     console.log("Preferences:", {
@@ -143,8 +193,70 @@ const Browse = () => {
     );
   };
 
+  const saveFit = async (topIndex, bottomIndex) => {
+    console.log("Saving fit...");
+    const top = carouselDataTops[topIndex];
+    const bottom = carouselDataBottoms[bottomIndex];
+    try {
+      const response = await fetch(address + "/save_fit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: userEmail,
+          top: top.image,
+          bottom: bottom.image,
+        }),
+      });
+
+      // Log the raw response for debugging
+      const responseText = await response.text();
+      console.log("Raw response:", responseText);
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers);
+
+      let responseData;
+      try {
+        responseData = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error("JSON Parse Error:", parseError);
+        console.error("Response was not JSON:", responseText);
+        showNotificationMessage("Failed to save fit");
+        return;
+      }
+
+      if (response.status === 200) {
+        console.log("Fit saved!");
+        showNotificationMessage("Fit saved in your gallery!");
+      } else {
+        console.log("Fit not saved: ", responseData.message);
+        showNotificationMessage("Failed to save fit");
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+      showNotificationMessage("Failed to save fit");
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      {/* Notification Dropdown */}
+      {showNotification && (
+        <Animated.View
+          style={[
+            styles.notificationContainer,
+            notificationMessage === "Failed to save fit" && {
+              backgroundColor: "#FF8A8A",
+            },
+            {
+              transform: [{ translateY: notificationAnimation }],
+            },
+          ]}
+        >
+          <Text style={styles.notificationText}>{notificationMessage}</Text>
+        </Animated.View>
+      )}
       {/* Fixed Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.push("/")}>
@@ -168,6 +280,10 @@ const Browse = () => {
             snapToInterval={screenWidth * 0.6 + 20}
             decelerationRate="fast"
             contentContainerStyle={styles.carouselContent}
+            onViewableItemsChanged={(info) =>
+              onViewableItemsChanged(info, setCurrentTopIndex)
+            }
+            viewabilityConfig={viewabilityConfig}
           />
         </View>
 
@@ -185,13 +301,20 @@ const Browse = () => {
             snapToInterval={screenWidth * 0.6 + 20}
             decelerationRate="fast"
             contentContainerStyle={styles.carouselContent}
+            onViewableItemsChanged={(info) =>
+              onViewableItemsChanged(info, setCurrentBottomIndex)
+            }
+            viewabilityConfig={viewabilityConfig}
           />
         </View>
       </View>
 
       {/* Fixed Bottom Bar */}
       <View style={styles.bottomBar}>
-        <TouchableOpacity style={styles.bottomButton}>
+        <TouchableOpacity
+          style={styles.bottomButton}
+          onPress={() => saveFit(currentTopIndex, currentBottomIndex)}
+        >
           <Text style={styles.bottomButtonText}>Save fit</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.bottomButton, styles.secondButton]}>
@@ -216,7 +339,7 @@ const Browse = () => {
                   // Loading state
                   <View style={styles.loadingContainer}>
                     {loadingMessage === "Loading recommendations..." ? (
-                      <ActivityIndicator size="large" color="#007AFF" />
+                      <ActivityIndicator size="large" color="#000000" />
                     ) : null}
                     <Text style={styles.loadingText}>{loadingMessage}</Text>
                   </View>
@@ -254,7 +377,7 @@ const Browse = () => {
                     <View style={styles.categoryContainer}>
                       <Text style={styles.categoryTitle}>Formality</Text>
                       {renderOptionButtons(
-                        ["None", "Casual", "Formal"],
+                        ["All", "Casual", "Formal"],
                         selectedFormality,
                         setSelectedFormality
                       )}
@@ -292,7 +415,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFC688",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    borderBottomWidth: 1,
+    // borderBottomWidth: 1,
     borderBottomColor: "#E0E0E0",
     elevation: 3,
     shadowColor: "#000",
@@ -327,7 +450,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
+    padding: 10,
     paddingBottom: 80, // Add space for bottom bar
   },
   contentText: {
@@ -381,7 +504,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "bold",
     color: "black",
-    textAlign: "center",
+    textAlign: "left",
     marginBottom: 30,
     lineHeight: 28,
   },
@@ -400,18 +523,18 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   optionButton: {
-    backgroundColor: "#FFBEBE",
+    backgroundColor: "#BFFAE7",
     borderRadius: 25,
-    borderWidth: 2,
-    borderColor: "#E0E0E0",
+    borderWidth: 1,
+    borderColor: "#7FD1C6",
     paddingHorizontal: 16,
     paddingVertical: 10,
     marginRight: 6,
     marginBottom: 6,
   },
   selectedButton: {
-    backgroundColor: "#007AFF",
-    borderColor: "#007AFF",
+    backgroundColor: "#4AB79F",
+    borderColor: "#2E7A66",
   },
   optionText: {
     fontSize: 14,
@@ -420,13 +543,12 @@ const styles = StyleSheet.create({
   },
   selectedText: {
     color: "white",
-    fontWeight: "600",
   },
   doneButton: {
-    backgroundColor: "#90E5FF",
+    backgroundColor: "#FFD9F0",
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: "black",
+    borderColor: "#E0859B",
     padding: 16,
     alignItems: "center",
     alignSelf: "center",
@@ -487,6 +609,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 50,
+    height: "100%",
   },
   loadingText: {
     fontSize: 16,
@@ -516,7 +639,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   carouselContent: {
-    paddingHorizontal: (screenWidth - screenWidth * 0.6) / 3.2,
+    paddingHorizontal: (screenWidth - screenWidth * 0.6) / 2.9,
   },
   carouselItem: {
     width: screenWidth * 0.6,
@@ -547,6 +670,37 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     color: "black",
+    textAlign: "center",
+  },
+  indexIndicator: {
+    fontSize: 12,
+    color: "black",
+    textAlign: "center",
+    marginTop: 5,
+    opacity: 0.7,
+  },
+  notificationContainer: {
+    position: "absolute",
+    top: 60,
+    left: 20,
+    right: 20,
+    backgroundColor: "#70ff70",
+    borderRadius: 8,
+    padding: 12,
+    zIndex: 1000,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  notificationText: {
+    color: "464646",
+    fontSize: 14,
+    fontWeight: "600",
     textAlign: "center",
   },
 });
