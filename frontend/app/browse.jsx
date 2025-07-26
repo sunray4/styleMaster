@@ -176,9 +176,7 @@ const Browse = () => {
         {/* Second Carousel Section */}
         <View style={styles.carouselContainer}>
           <FlatList
-            data={
-              carouselDataBottoms
-            }
+            data={carouselDataBottoms}
             renderItem={renderCarouselItem}
             keyExtractor={(item) => item.id.toString()}
             horizontal={true}

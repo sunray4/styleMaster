@@ -45,6 +45,16 @@ const Gallery = () => {
   }, []);
 
   const renderImageGrid = () => {
+    console.log("Rendering grid with images:", images.length);
+    
+    if (!images || images.length === 0) {
+      return (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>No images available</Text>
+        </View>
+      );
+    }
+
     const rows = [];
     for (let i = 0; i < images.length; i += 3) {
       const rowImages = images.slice(i, i + 3);
@@ -56,6 +66,8 @@ const Gallery = () => {
                 source={{ uri: image }}
                 style={styles.gridImage}
                 resizeMode="cover"
+                onError={(error) => console.error("Image load error:", error)}
+                onLoad={() => console.log("Image loaded successfully:", image)}
               />
             </View>
           ))}
@@ -150,7 +162,6 @@ const styles = StyleSheet.create({
   },
   gridContainer: {
     padding: 8,
-    backgroundColor: "white",
   },
   imageRow: {
     flexDirection: "row",
@@ -169,6 +180,17 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     borderRadius: 8,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: 400,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: "black",
+    fontWeight: "500",
   },
   loadingContainer: {
     flex: 1,

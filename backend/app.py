@@ -21,8 +21,6 @@ client = MongoClient(MONGO_URI)
 db = client.get_database('db')
 users = db.get_collection('users')
 
-users.insert_one({"username" : "sowmya3141@gmail.com", "password" : "123"})
-
 @app.route('/')
 def index():
     return "hello world"
@@ -167,8 +165,5 @@ def virtual_try_on():
 
 
 if __name__ == '__main__':
-    # Start ngrok tunnel
-    public_url = ngrok.connect(8000)
-    print(f"Public URL: {public_url}")
     
     app.run(debug=True, port=8000, host='0.0.0.0')
