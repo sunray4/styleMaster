@@ -12,10 +12,8 @@ cd frontend
 npm install
 npx expo start
 cd ../backend
-pip install requests
-pip install playwright
+pip install -r requirements.txt
 playwright install
-pip install flask flask-cors pymongo pyngrok python-dotenv
 ```
 
 ## How to run:
