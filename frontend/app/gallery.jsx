@@ -189,7 +189,7 @@ const Gallery = () => {
                 style={styles.deleteButton}
                 onPress={() => deleteOutfit(container.id)}
               >
-                <Trash width="70%" height="70%" />
+                <Trash width="70%" height="70%" color="#6B7280" />
               </TouchableOpacity>
             </View>
           ))}
@@ -327,6 +327,8 @@ const styles = StyleSheet.create({
   deleteButton: {
     backgroundColor: "white",
     borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#6B7280",
     width: 30,
     height: 30,
     justifyContent: "center",

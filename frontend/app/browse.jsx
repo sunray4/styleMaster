@@ -65,6 +65,7 @@ const Browse = () => {
 
   const getLink = async (image) => {
     console.log("Getting link for image:", image.substring(0, 50) + "...");
+    showNotificationMessage("Fetching shopping link...");
     try {
       // Remove data URL prefix if present
       let no_prefix_image = image;
@@ -148,7 +149,7 @@ const Browse = () => {
       }).start(() => {
         setShowNotification(false);
       });
-    }, 1000);
+    }, 1200);
   };
 
   const handleDone = async () => {
@@ -380,9 +381,9 @@ const Browse = () => {
         >
           <Text style={styles.bottomButtonText}>Save fit</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.bottomButton, styles.secondButton]}>
+        {/* <TouchableOpacity style={[styles.bottomButton, styles.secondButton]}>
           <Text style={styles.bottomButtonText}>See this on me</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       {/* Preference Modal Popup */}
@@ -706,7 +707,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   carouselContent: {
-    paddingHorizontal: (screenWidth - screenWidth * 0.6) / 2.6,
+    paddingHorizontal: (screenWidth - screenWidth * 0.6) / 2.2,
   },
   carouselItem: {
     width: screenWidth * 0.6,
@@ -716,7 +717,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#FFD19F",
     marginHorizontal: 10,
-    padding: 12,
+    padding: 8,
     alignItems: "center",
     justifyContent: "space-between",
     shadowColor: "#000",
@@ -736,17 +737,10 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   carouselTitle: {
-    fontSize: 14,
+    fontSize: 13,
     fontFamily: "Nunito_600SemiBold",
-    color: "black",
+    color: "#6B7280",
     textAlign: "center",
-  },
-  indexIndicator: {
-    fontSize: 12,
-    color: "black",
-    textAlign: "center",
-    marginTop: 5,
-    opacity: 0.7,
   },
   notificationContainer: {
     position: "absolute",
@@ -773,15 +767,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   loadingContainer: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#FFC688",
+    backgroundColor: "#FFD19F",
   },
   shopNowButton: {
-    backgroundColor: "#ccc",
+    // backgroundColor: "#ccc",
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: "#000000",
+    borderColor: "#6B7280",
     paddingHorizontal: 10,
     paddingVertical: 3,
     alignItems: "center",

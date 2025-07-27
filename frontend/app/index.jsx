@@ -17,15 +17,16 @@ import { useAuth } from "./context/AuthContext";
 
 import Logo from "../assets/cat_logo.svg"; // Adjust the path as necessary
 
+
 const catimg = [
-  require('../assets/frames/cat01.png'),
-  require('../assets/frames/cat02.png'),
-  require('../assets/frames/cat03.png'),
-  require('../assets/frames/cat04.png'),
-  require('../assets/frames/cat05.png'),
-  require('../assets/frames/cat06.png'),
-  require('../assets/frames/cat07.png'),
-  require('../assets/frames/cat08.png'),
+  require('../assets/frames/1.png'),
+  require('../assets/frames/2.png'),
+  require('../assets/frames/3.png'),
+  require('../assets/frames/4.png'),
+  require('../assets/frames/5.png'),
+  require('../assets/frames/6.png'),
+  require('../assets/frames/7.png'),
+  require('../assets/frames/8.png'),
 ];
 
 const BackgroundPattern = () => {
@@ -81,6 +82,9 @@ const Home = () => {
   // Animation value for the floating effect
   const floatAnimation = useRef(new Animated.Value(0)).current;
 
+  // State for cat frame animation
+  const [currentFrame, setCurrentFrame] = useState(0);
+
   // State for button hover effects
   const [browseHover, setBrowseHover] = useState(false);
   const [galleryHover, setGalleryHover] = useState(false);
@@ -114,6 +118,15 @@ const Home = () => {
 
     startFloating();
   }, [floatAnimation]);
+
+  // Cat frame animation - cycles through catimg array every 250ms
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentFrame((prevFrame) => (prevFrame + 1) % catimg.length);
+    }, 250);
+
+    return () => clearInterval(interval);
+  }, []);
 
   let [fontsLoaded] = useFonts({
     Atma_600SemiBold,
@@ -202,6 +215,16 @@ const Home = () => {
       >
         <Text style={styles.buttonText}>Gallery</Text>
       </TouchableOpacity>
+      
+      {/* Animated Cat under Gallery button */}
+      <View style={styles.animatedCat}>
+        <Image 
+          source={catimg[currentFrame]}
+          style={styles.catImage}
+          resizeMode="contain"
+        />
+      </View>
+      
       <View style={styles.userInfo}>
         <TouchableOpacity style={styles.logoutButton} onPress={logout}>
           <Text style={styles.logoutButtonText}>Logout</Text>
@@ -304,6 +327,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#FFC688",
+  },
+  animatedCat: {
+    alignItems: "center",
+  },
+  catImage: {
+    width: 80,
+    height: 80,
   },
   gifImage: {
     width: 100,
