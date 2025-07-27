@@ -4,7 +4,7 @@ import {
   Nunito_900Black,
   useFonts,
 } from "@expo-google-fonts/nunito";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   ActivityIndicator,
   Animated,
@@ -24,6 +24,17 @@ import { router } from "expo-router";
 import { useAuth } from "./context/AuthContext";
 
 const { width: screenWidth } = Dimensions.get("window");
+
+const catimg = [
+  require('../assets/frames/1.png'),
+  require('../assets/frames/2.png'),
+  require('../assets/frames/3.png'),
+  require('../assets/frames/4.png'),
+  require('../assets/frames/5.png'),
+  require('../assets/frames/6.png'),
+  require('../assets/frames/7.png'),
+  require('../assets/frames/8.png'),
+];
 
 const Browse = () => {
   const address = "https://ef7cb4d3179c.ngrok-free.app";
@@ -48,6 +59,18 @@ const Browse = () => {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
   const notificationAnimation = useRef(new Animated.Value(-100)).current;
+
+  // State for cat frame animation
+  const [currentFrame, setCurrentFrame] = useState(0);
+
+  // Cat frame animation - cycles through catimg array every 250ms
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentFrame((prevFrame) => (prevFrame + 1) % catimg.length);
+    }, 250);
+
+    return () => clearInterval(interval);
+  }, []);
 
   let [fontsLoaded] = useFonts({
     Nunito_900Black,
@@ -402,10 +425,20 @@ const Browse = () => {
                 {isLoading ? (
                   // Loading state
                   <View style={styles.loadingContainer}>
-                    {loadingMessage === "Loading recommendations..." ? (
-                      <ActivityIndicator size="large" color="#000000" />
-                    ) : null}
-                    <Text style={styles.loadingText}>{loadingMessage}</Text>
+                    
+                    <View style={styles.animatedCat}>
+                      <Image 
+                        source={catimg[currentFrame]}
+                        style={styles.catImage}
+                        resizeMode="contain"
+                      />
+                    </View>
+                    <View style={styles.loadingTextContainer}>
+                      <Text style={styles.loadingText}>{loadingMessage}</Text>
+                      {loadingMessage === "Loading recommendations..." ? (
+                        <ActivityIndicator size="small" color="#000000" style={styles.loadingSpinner} />
+                      ) : null}
+                    </View>
                   </View>
                 ) : (
                   // Normal content
@@ -676,14 +709,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: "65%",
-    height: "100%",
+  //  paddingVertical: "0%",
   },
   loadingText: {
     fontSize: 16,
     color: "black",
-    marginTop: 16,
+    marginTop: -20,
     fontFamily: "Nunito_600SemiBold",
+  },
+  loadingTextContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  loadingSpinner: {
+    marginLeft: 10,
+    marginTop: -20,
   },
   // Carousel Styles
   carouselContainer: {
@@ -783,5 +824,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignSelf: "center",
     marginTop: 2,
+  },
+  animatedCat: {
+    alignItems: "center",
+  },
+  catImage: {
+    marginTop: 70,
+    width: 200,
+    height: 200,
   },
 });

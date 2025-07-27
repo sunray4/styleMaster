@@ -7,6 +7,7 @@ import {
 import { router } from "expo-router";
 import React from "react";
 import {
+  Alert,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -19,7 +20,7 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, Image } from "react-native";
 import { useAuth } from "./context/AuthContext";
 
-import Trash from "../assets/trash-can-solid-full.svg";
+import DeleteIcon from "../assets/delete.svg";
 
 const Gallery = () => {
   const address = "https://ef7cb4d3179c.ngrok-free.app";
@@ -31,32 +32,52 @@ const Gallery = () => {
   const userEmail = auth.userEmail;
 
   const deleteOutfit = async (index) => {
-    // Remove the outfit at the specified index
-    const newTops = [...imagesTops];
-    const newBottoms = [...imagesBottoms];
-
-    newTops.splice(index, 1);
-    newBottoms.splice(index, 1);
-
-    setImagesTops(newTops);
-    setImagesBottoms(newBottoms);
-
-    try {
-      const response = await fetch(
-        address + "/gallery-delete?email=" + userEmail + "&index=" + index,
+    console.log("Delete button pressed for index:", index);
+    Alert.alert(
+      "Delete Outfit",
+      "Are you sure you want to delete this outfit? This action cannot be undone.",
+      [
         {
-          method: "DELETE",
-        }
-      );
-      const responseData = await response.json();
-      console.log("delete response", responseData);
-    } catch (error) {
-      console.error("Gallery delete error:", error);
-    }
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            // Remove the outfit at the specified index
+            const newTops = [...imagesTops];
+            const newBottoms = [...imagesBottoms];
+
+            newTops.splice(index, 1);
+            newBottoms.splice(index, 1);
+
+            setImagesTops(newTops);
+            setImagesBottoms(newBottoms);
+
+            try {
+              const response = await fetch(
+                address +
+                  "/gallery-delete?email=" +
+                  userEmail +
+                  "&index=" +
+                  index,
+                {
+                  method: "DELETE",
+                }
+              );
+              const responseData = await response.json();
+              console.log("delete response", responseData);
+            } catch (error) {
+              console.error("Gallery delete error:", error);
+            }
+          },
+        },
+      ]
+    );
   };
 
   const getGalleryData = async () => {
-    // Commenting out backend fetch temporarily
     try {
       const response = await fetch(address + "/gallery?email=" + userEmail, {
         method: "GET",
@@ -65,7 +86,7 @@ const Gallery = () => {
         },
       });
       const responseData = await response.json();
-      console.log("gallery response", responseData);
+      // console.log("gallery response", responseData);
       if (response.ok) {
         setImagesTops(responseData.data.map((item) => item.top));
         setImagesBottoms(responseData.data.map((item) => item.bottom));
@@ -145,51 +166,24 @@ const Gallery = () => {
           {rowContainers.map((container, index) => (
             <View key={container.id} style={styles.outfitContainer}>
               {/* Top Image */}
-              <View style={styles.imageContainer}>
-                {container.top ? (
-                  <Image
-                    source={{ uri: container.top }}
-                    style={styles.gridImage}
-                    resizeMode="cover"
-                    onError={(error) =>
-                      console.error("Top image load error:", error)
-                    }
-                    onLoad={() => console.log("Top image loaded successfully")}
-                  />
-                ) : (
-                  <View style={styles.placeholderContainer}>
-                    <Text style={styles.placeholderText}>No Top</Text>
-                  </View>
-                )}
-              </View>
-
+              <Image
+                source={{ uri: container.top }}
+                style={styles.topImage}
+                resizeMode="cover"
+              />
               {/* Bottom Image */}
-              <View style={[styles.imageContainer, { marginBottom: 8 }]}>
-                {container.bottom ? (
-                  <Image
-                    source={{ uri: container.bottom }}
-                    style={styles.gridImageBottom}
-                    resizeMode="cover"
-                    onError={(error) =>
-                      console.error("Bottom image load error:", error)
-                    }
-                    onLoad={() =>
-                      console.log("Bottom image loaded successfully")
-                    }
-                  />
-                ) : (
-                  <View style={styles.placeholderContainer}>
-                    <Text style={styles.placeholderText}>No Bottom</Text>
-                  </View>
-                )}
-              </View>
+              <Image
+                source={{ uri: container.bottom }}
+                style={styles.bottomImage}
+                resizeMode="cover"
+              />
 
-              {/* Delete Button */}
+              {/* Delete Button - Positioned absolutely to overlap */}
               <TouchableOpacity
                 style={styles.deleteButton}
                 onPress={() => deleteOutfit(container.id)}
               >
-                <Trash width="70%" height="70%" color="#6B7280" />
+                <DeleteIcon width="70%" height="70%" color="#6B7280" />
               </TouchableOpacity>
             </View>
           ))}
@@ -325,28 +319,16 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito_600SemiBold",
   },
   deleteButton: {
-    backgroundColor: "white",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#6B7280",
-    width: 30,
-    height: 30,
+    position: "absolute",
+    top: 7,
+    right: 7,
+    borderRadius: 20,
+    width: 35,
+    height: 35,
     justifyContent: "center",
     alignItems: "center",
-    alignSelf: "center",
-    marginTop: 4,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 3,
-  },
-  deleteButtonText: {
-    fontSize: 18,
-    color: "white",
+    elevation: 5,
+    zIndex: 10, // must be above image
   },
   emptyContainer: {
     flex: 1,
@@ -378,5 +360,19 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 24,
     color: "white",
+  },
+  topImage: {
+    width: "100%",
+    height: 200,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    resizeMode: "cover",
+  },
+  bottomImage: {
+    width: "100%",
+    height: 250,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    resizeMode: "cover",
   },
 });

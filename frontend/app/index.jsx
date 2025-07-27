@@ -207,7 +207,7 @@ const Home = () => {
       <TouchableOpacity
         style={[
           styles.button,
-          { backgroundColor: "#6D9BFF", borderColor: "#355A99" },
+          { backgroundColor: "#6D9BFF", borderColor: "#355A99", marginBottom: 0, },
           galleryHover && { backgroundColor: "#90EE90" },
         ]}
         onPressIn={() => onPressButton("Gallery")}
@@ -329,6 +329,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFC688",
   },
   animatedCat: {
+    marginTop: 15,
     alignItems: "center",
   },
   catImage: {
