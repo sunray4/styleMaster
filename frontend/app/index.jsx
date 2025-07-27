@@ -1,6 +1,6 @@
 import { Atma_600SemiBold, useFonts } from "@expo-google-fonts/atma";
 import { Nunito_600SemiBold, Nunito_900Black } from "@expo-google-fonts/nunito";
-import { router } from "expo-router";
+import { router, Link } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -16,6 +16,17 @@ import Svg, { Path, Rect } from "react-native-svg";
 import { useAuth } from "./context/AuthContext";
 
 import Logo from "../assets/cat_logo.svg"; // Adjust the path as necessary
+
+const catimg = [
+  require('../assets/frames/cat01.png'),
+  require('../assets/frames/cat02.png'),
+  require('../assets/frames/cat03.png'),
+  require('../assets/frames/cat04.png'),
+  require('../assets/frames/cat05.png'),
+  require('../assets/frames/cat06.png'),
+  require('../assets/frames/cat07.png'),
+  require('../assets/frames/cat08.png'),
+];
 
 const BackgroundPattern = () => {
   const screenWidth = Dimensions.get("window").width;

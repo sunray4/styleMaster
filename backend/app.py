@@ -152,14 +152,18 @@ def save_fit():
         return jsonify({'status': 'error', 'message': 'Error saving fit'}), 500
     return jsonify({'status': 'success', 'message': 'Image uploaded successfully'}), 200
 
-@app.route('/delete', methods=['DELETE'])
-def delete():
+@app.route('/gallery-delete', methods=['DELETE'])
+def gallery_delete():
     email = request.args.get('email')
     index = request.args.get('index')
     if not email or not index:
+        print("here")
+        
         return jsonify({'status': 'error', 'message': 'Email and index are required'}), 400
     user = users.find_one({'username' : email})
-    if user and email and isinstance(index, int) and 'fits' in user and 0 <= index < len(user['fits']):
+    
+    index = int(index)
+    if user and email and 'fits' in user and 0 <= index < len(user['fits']):
         new_fits = user['fits'][:index] + user['fits'][index + 1:]
         users.update_one({'username': email}, {"$set": {"fits": new_fits}})
         return jsonify({'status': 'success', 'message': 'Fit deleted successfuly'}), 200

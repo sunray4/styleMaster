@@ -43,26 +43,13 @@ const Gallery = () => {
 
     try {
       const response = await fetch(
-        address + "/delete-outfit?email=" + userEmail + "&index=" + index,
+        address + "/gallery-delete?email=" + userEmail + "&index=" + index,
         {
           method: "DELETE",
         }
       );
-      
-      if (response.ok) {
-        // Check if response is JSON
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          const responseData = await response.json();
-          console.log("delete response", responseData);
-        } else {
-          console.log("Delete successful, but no JSON response");
-        }
-      } else {
-        // Log the response status and text for debugging
-        const responseText = await response.text();
-        console.error("Delete failed:", response.status, responseText);
-      }
+      const responseData = await response.json();
+      console.log("delete response", responseData);
     } catch (error) {
       console.error("Gallery delete error:", error);
     }
@@ -77,22 +64,15 @@ const Gallery = () => {
           "Content-Type": "application/json",
         },
       });
-      
+      const responseData = await response.json();
+      console.log("gallery response", responseData);
       if (response.ok) {
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          const responseData = await response.json();
-          console.log("gallery response", responseData);
-          setImagesTops(responseData.data.map((item) => item.top));
-          setImagesBottoms(responseData.data.map((item) => item.bottom));
-        } else {
-          console.error("Expected JSON response but got:", contentType);
-        }
+        setImagesTops(responseData.data.map((item) => item.top));
+        setImagesBottoms(responseData.data.map((item) => item.bottom));
       } else if (response.status === 404) {
         console.log("No gallery data found");
       } else {
-        const responseText = await response.text();
-        console.error("Failed to fetch gallery data:", response.status, responseText);
+        console.error("Failed to fetch gallery data");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -100,56 +80,27 @@ const Gallery = () => {
       setLoading(false);
     }
 
-    // Hardcoded sample data
-    const sampleImageUrl =
-      "https://image.hm.com/assets/hm/44/64/4464618446c394fe79392b81ca8a9eb4e431011f.jpg?imwidth=657";
-    const sampleImageUrl2 =
-      "https://image.hm.com/assets/hm/e6/4b/e64bb0639e54f8fe4d3ea1701f8a36aecb41b941.jpg?imwidth=2160";
-    const sampleImageUrl3 =
-      "https://image.hm.com/assets/hm/40/f1/40f1d72540c2b82e707251f4d4aafc28817449c0.jpg?imwidth=2160";
-    const sampleImageUrl4 =
-      "https://image.hm.com/assets/hm/50/97/5097ac96619bde92de285195f19e3d4ffa642974.jpg?imwidth=2160";
-    const sampleImageUrl5 =
-      "https://image.hm.com/assets/hm/2f/a9/2fa91543ffcce7807669a8b830f3f1d34563ebe0.jpg?imwidth=2160";
+    let [fontsLoaded] = useFonts({
+      Nunito_900Black,
+      Nunito_700Bold,
+      Nunito_600SemiBold,
+    });
 
-    const sampleTops = [
-      sampleImageUrl,
-      sampleImageUrl4,
-      sampleImageUrl,
-      sampleImageUrl,
-      sampleImageUrl,
-      sampleImageUrl,
-    ];
+    if (!fontsLoaded) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#007AFF" />
+        </View>
+      );
+    }
 
-    const sampleBottoms = [
-      sampleImageUrl2,
-      sampleImageUrl3,
-      sampleImageUrl5,
-      sampleImageUrl,
-      sampleImageUrl,
-      sampleImageUrl,
-    ];
-
-    // Use sample data if backend fails
-    if (imagesTops.length === 0 && imagesBottoms.length === 0) {
+    // Simulate loading delay
+    setTimeout(() => {
       setImagesTops(sampleTops);
       setImagesBottoms(sampleBottoms);
-    }
+      setLoading(false);
+    }, 1000);
   };
-
-  let [fontsLoaded] = useFonts({
-    Nunito_900Black,
-    Nunito_700Bold,
-    Nunito_600SemiBold,
-  });
-
-  if (!fontsLoaded) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
-      </View>
-    );
-  }
 
   useEffect(() => {
     getGalleryData();
@@ -286,8 +237,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFC688",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E0E0E0",
     elevation: 3,
     shadowColor: "#000",
     shadowOffset: {
@@ -296,6 +245,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 2,
+    marginBottom: 10,
   },
   homeButton: {
     padding: 8,
@@ -375,10 +325,10 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito_600SemiBold",
   },
   deleteButton: {
-    backgroundColor: "#FF6B6B",
-    borderRadius: 20,
-    width: 40,
-    height: 40,
+    backgroundColor: "white",
+    borderRadius: 10,
+    width: 30,
+    height: 30,
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
