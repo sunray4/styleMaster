@@ -83,6 +83,8 @@ const Browse = () => {
       const img_data = await img_response.json();
       console.log("img_data:", img_data);
       if (img_response.status === 200) {
+        console.log("got image url");
+        // comment out to avoid wasting free credits
         // const url_response = await fetch(
         //   address + "/find-match?img_url=" + img_data.image_url
         // );
@@ -92,12 +94,6 @@ const Browse = () => {
       } else {
         console.error("upload img error:", img_data.message);
       }
-      //   const url_response = await fetch(
-      //     address + "/find-match?img_url=" + img_data.image_url
-      //   );
-      //   const url_data = await url_response.json();
-      //   // console.log(url_data);
-      //   Linking.openURL(url_data.match_url);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -522,8 +518,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 10,
-    paddingBottom: 80, // Add space for bottom bar
+    padding: 4,
+    paddingBottom: 60, // Add space for bottom bar
   },
   contentText: {
     fontSize: 24,
@@ -786,11 +782,11 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderWidth: 1,
     borderColor: "#000000",
-    paddingHorizontal: 7,
+    paddingHorizontal: 10,
     paddingVertical: 3,
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
-    marginTop: 4,
+    marginTop: 2,
   },
 });

@@ -48,8 +48,21 @@ const Gallery = () => {
           method: "DELETE",
         }
       );
-      const responseData = await response.json();
-      console.log("delete response", responseData);
+      
+      if (response.ok) {
+        // Check if response is JSON
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const responseData = await response.json();
+          console.log("delete response", responseData);
+        } else {
+          console.log("Delete successful, but no JSON response");
+        }
+      } else {
+        // Log the response status and text for debugging
+        const responseText = await response.text();
+        console.error("Delete failed:", response.status, responseText);
+      }
     } catch (error) {
       console.error("Gallery delete error:", error);
     }
@@ -64,15 +77,22 @@ const Gallery = () => {
           "Content-Type": "application/json",
         },
       });
-      const responseData = await response.json();
-      console.log("gallery response", responseData);
+      
       if (response.ok) {
-        setImagesTops(responseData.data.map((item) => item.top));
-        setImagesBottoms(responseData.data.map((item) => item.bottom));
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const responseData = await response.json();
+          console.log("gallery response", responseData);
+          setImagesTops(responseData.data.map((item) => item.top));
+          setImagesBottoms(responseData.data.map((item) => item.bottom));
+        } else {
+          console.error("Expected JSON response but got:", contentType);
+        }
       } else if (response.status === 404) {
         console.log("No gallery data found");
       } else {
-        console.error("Failed to fetch gallery data");
+        const responseText = await response.text();
+        console.error("Failed to fetch gallery data:", response.status, responseText);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -80,27 +100,56 @@ const Gallery = () => {
       setLoading(false);
     }
 
-    let [fontsLoaded] = useFonts({
-      Nunito_900Black,
-      Nunito_700Bold,
-      Nunito_600SemiBold,
-    });
+    // Hardcoded sample data
+    const sampleImageUrl =
+      "https://image.hm.com/assets/hm/44/64/4464618446c394fe79392b81ca8a9eb4e431011f.jpg?imwidth=657";
+    const sampleImageUrl2 =
+      "https://image.hm.com/assets/hm/e6/4b/e64bb0639e54f8fe4d3ea1701f8a36aecb41b941.jpg?imwidth=2160";
+    const sampleImageUrl3 =
+      "https://image.hm.com/assets/hm/40/f1/40f1d72540c2b82e707251f4d4aafc28817449c0.jpg?imwidth=2160";
+    const sampleImageUrl4 =
+      "https://image.hm.com/assets/hm/50/97/5097ac96619bde92de285195f19e3d4ffa642974.jpg?imwidth=2160";
+    const sampleImageUrl5 =
+      "https://image.hm.com/assets/hm/2f/a9/2fa91543ffcce7807669a8b830f3f1d34563ebe0.jpg?imwidth=2160";
 
-    if (!fontsLoaded) {
-      return (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#007AFF" />
-        </View>
-      );
-    }
+    const sampleTops = [
+      sampleImageUrl,
+      sampleImageUrl4,
+      sampleImageUrl,
+      sampleImageUrl,
+      sampleImageUrl,
+      sampleImageUrl,
+    ];
 
-    // Simulate loading delay
-    setTimeout(() => {
+    const sampleBottoms = [
+      sampleImageUrl2,
+      sampleImageUrl3,
+      sampleImageUrl5,
+      sampleImageUrl,
+      sampleImageUrl,
+      sampleImageUrl,
+    ];
+
+    // Use sample data if backend fails
+    if (imagesTops.length === 0 && imagesBottoms.length === 0) {
       setImagesTops(sampleTops);
       setImagesBottoms(sampleBottoms);
-      setLoading(false);
-    }, 1000);
+    }
   };
+
+  let [fontsLoaded] = useFonts({
+    Nunito_900Black,
+    Nunito_700Bold,
+    Nunito_600SemiBold,
+  });
+
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    );
+  }
 
   useEffect(() => {
     getGalleryData();

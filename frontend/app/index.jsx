@@ -10,6 +10,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Image,
 } from "react-native";
 import Svg, { Path, Rect } from "react-native-svg";
 import { useAuth } from "./context/AuthContext";
@@ -292,5 +293,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#FFC688",
+  },
+  gifImage: {
+    width: 100,
+    height: 100,
+    position: "absolute",
+    bottom: 10,
+    right: 10,
   },
 });
