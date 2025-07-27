@@ -48,7 +48,7 @@ def scrape_images(gender, formality):
             elif formality == "all" and gender == "all":
                 topLink = "https://www2.hm.com/en_ca/search-results.html?q=top&image=stillLife&department=all&sort=RELEVANCE&page=1"
             
-            # Fallback if no condition matches
+            # no condition matches
             if not topLink:
                 print(f"No matching condition found for gender='{gender}', formality='{formality}'")
                 topLink = "https://www2.hm.com/en_ca/search-results.html?q=casual&productTypes=Blouse,Cardigan,Knit+Sweater,T-shirt,Top,Vest&image=stillLife&sort=RELEVANCE&page=1"
@@ -92,7 +92,7 @@ def scrape_images(gender, formality):
             elif formality == "all" and gender == "all":
                 bottomLink = "https://www2.hm.com/en_ca/search-results.html?q=clothes&customerGroups=Woman,Man&productTypes=Jeans,Leggings,Pajama+Pants,Pants,Shorts,Skirt,Skort&image=stillLife&sort=RELEVANCE&page=3"
             
-            # Fallback if no condition matches
+            # no condition matches
             if not bottomLink:
                 print(f"No matching condition found for bottoms - gender='{gender}', formality='{formality}'")
                 bottomLink = "https://www2.hm.com/en_ca/search-results.html?q=casual&productTypes=Jeans,Pajama+Pants,Pants,Shorts,Skirt,Skort,Leggings&image=stillLife&department=all&sort=RELEVANCE&page=3"

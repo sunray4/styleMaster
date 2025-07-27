@@ -19,6 +19,8 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, Image } from "react-native";
 import { useAuth } from "./context/AuthContext";
 
+import Trash from "../assets/trash-can-solid-full.svg";
+
 const Gallery = () => {
   const address = "https://ef7cb4d3179c.ngrok-free.app";
   const [imagesTops, setImagesTops] = useState([]);
@@ -27,6 +29,31 @@ const Gallery = () => {
 
   const auth = useAuth();
   const userEmail = auth.userEmail;
+
+  const deleteOutfit = async (index) => {
+    // Remove the outfit at the specified index
+    const newTops = [...imagesTops];
+    const newBottoms = [...imagesBottoms];
+
+    newTops.splice(index, 1);
+    newBottoms.splice(index, 1);
+
+    setImagesTops(newTops);
+    setImagesBottoms(newBottoms);
+
+    try {
+      const response = await fetch(
+        address + "/delete-outfit?email=" + userEmail + "&index=" + index,
+        {
+          method: "DELETE",
+        }
+      );
+      const responseData = await response.json();
+      console.log("delete response", responseData);
+    } catch (error) {
+      console.error("Gallery delete error:", error);
+    }
+  };
 
   const getGalleryData = async () => {
     // Commenting out backend fetch temporarily
@@ -60,38 +87,12 @@ const Gallery = () => {
     });
 
     if (!fontsLoaded) {
-      return null;
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#007AFF" />
+        </View>
+      );
     }
-
-    // Hardcoded sample data
-    const sampleImageUrl =
-      "https://image.hm.com/assets/hm/44/64/4464618446c394fe79392b81ca8a9eb4e431011f.jpg?imwidth=657";
-    const sampleImageUrl2 =
-      "https://image.hm.com/assets/hm/e6/4b/e64bb0639e54f8fe4d3ea1701f8a36aecb41b941.jpg?imwidth=2160";
-    const sampleImageUrl3 =
-      "https://image.hm.com/assets/hm/40/f1/40f1d72540c2b82e707251f4d4aafc28817449c0.jpg?imwidth=2160";
-    const sampleImageUrl4 =
-      "https://image.hm.com/assets/hm/50/97/5097ac96619bde92de285195f19e3d4ffa642974.jpg?imwidth=2160";
-    const sampleImageUrl5 =
-      "https://image.hm.com/assets/hm/2f/a9/2fa91543ffcce7807669a8b830f3f1d34563ebe0.jpg?imwidth=2160";
-
-    const sampleTops = [
-      sampleImageUrl,
-      sampleImageUrl4,
-      sampleImageUrl,
-      sampleImageUrl,
-      sampleImageUrl,
-      sampleImageUrl,
-    ];
-
-    const sampleBottoms = [
-      sampleImageUrl2,
-      sampleImageUrl3,
-      sampleImageUrl5,
-      sampleImageUrl,
-      sampleImageUrl,
-      sampleImageUrl,
-    ];
 
     // Simulate loading delay
     setTimeout(() => {
@@ -163,7 +164,7 @@ const Gallery = () => {
               </View>
 
               {/* Bottom Image */}
-              <View style={[styles.imageContainer, { marginBottom: 0 }]}>
+              <View style={[styles.imageContainer, { marginBottom: 8 }]}>
                 {container.bottom ? (
                   <Image
                     source={{ uri: container.bottom }}
@@ -182,19 +183,16 @@ const Gallery = () => {
                   </View>
                 )}
               </View>
+
+              {/* Delete Button */}
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => deleteOutfit(container.id)}
+              >
+                <Trash width="70%" height="70%" />
+              </TouchableOpacity>
             </View>
           ))}
-
-          {/* Fill empty slots in incomplete rows */}
-          {rowContainers.length < 2 &&
-            Array(2 - rowContainers.length)
-              .fill(null)
-              .map((_, index) => (
-                <View
-                  key={`empty-${i}-${index}`}
-                  style={styles.outfitContainer}
-                />
-              ))}
         </View>
       );
     }
@@ -279,12 +277,13 @@ const styles = StyleSheet.create({
   },
   imageRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    flexWrap: "wrap",
+    justifyContent: "flex-start",
     marginBottom: 16,
   },
   outfitContainer: {
-    flex: 1,
-    marginHorizontal: 4,
+    width: "48%",
+    marginHorizontal: "1%",
     flexDirection: "column",
     backgroundColor: "white",
     borderRadius: 12,
@@ -305,7 +304,7 @@ const styles = StyleSheet.create({
   },
   gridImage: {
     width: "100%",
-    height: 170,
+    height: 200,
     borderRadius: 8,
     resizeMode: "cover",
   },
@@ -325,6 +324,28 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#666",
     fontFamily: "Nunito_600SemiBold",
+  },
+  deleteButton: {
+    backgroundColor: "#FF6B6B",
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    marginTop: 4,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  deleteButtonText: {
+    fontSize: 18,
+    color: "white",
   },
   emptyContainer: {
     flex: 1,

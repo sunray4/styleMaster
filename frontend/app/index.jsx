@@ -110,7 +110,11 @@ const Home = () => {
   });
 
   if (!fontsLoaded) {
-    return null;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    );
   }
 
   // Show loading screen while checking authentication
@@ -144,8 +148,18 @@ const Home = () => {
   return (
     <View style={styles.container}>
       <BackgroundPattern />
-      <Text style={[styles.title, { fontFamily: "Atma_600SemiBold" }]}>
-        Welcome to Style
+      <Text
+        style={[
+          styles.title,
+          { fontFamily: "Atma_600SemiBold", marginBottom: -10 },
+        ]}
+      >
+        Welcome to
+      </Text>
+      <Text
+        style={[styles.title, { fontFamily: "Atma_600SemiBold", fontSize: 45 }]}
+      >
+        Style Master
       </Text>
 
       <Animated.View
@@ -200,7 +214,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 40,
     color: "black",
-    marginBottom: 10,
+    marginBottom: 5,
     textAlign: "center",
   },
   imageFrame: {
@@ -219,6 +233,7 @@ const styles = StyleSheet.create({
     elevation: 15,
     borderWidth: 2,
     borderColor: "#ffe474",
+    marginBottom: 50,
   },
   image: {
     width: "100%",
@@ -271,5 +286,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     fontFamily: "Nunito_600SemiBold",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FFC688",
   },
 });

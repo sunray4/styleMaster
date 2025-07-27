@@ -56,20 +56,69 @@ const Browse = () => {
   });
 
   if (!fontsLoaded) {
-    return null;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#000000" />
+      </View>
+    );
   }
+
+  const getLink = async (image) => {
+    console.log("Getting link for image:", image.substring(0, 50) + "...");
+    try {
+      // Remove data URL prefix if present
+      let no_prefix_image = image;
+      if (image.startsWith("data:image/")) {
+        const commaIndex = image.indexOf(",");
+        no_prefix_image = image.substring(commaIndex + 1);
+      }
+
+      const img_response = await fetch(address + "/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ image: no_prefix_image }),
+      });
+      const img_data = await img_response.json();
+      console.log("img_data:", img_data);
+      if (img_response.status === 200) {
+        // const url_response = await fetch(
+        //   address + "/find-match?img_url=" + img_data.image_url
+        // );
+        // const url_data = await url_response.json();
+        // console.log(url_data);
+        // Linking.openURL(url_data.match_url);
+      } else {
+        console.error("upload img error:", img_data.message);
+      }
+      //   const url_response = await fetch(
+      //     address + "/find-match?img_url=" + img_data.image_url
+      //   );
+      //   const url_data = await url_response.json();
+      //   // console.log(url_data);
+      //   Linking.openURL(url_data.match_url);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   const renderCarouselItem = ({ item }) => (
     <TouchableOpacity
       style={styles.carouselItem}
-      onPress={() => getDescription(item.image)}
+      onPress={() => getLink(item.image)}
     >
       <Image
         source={{ uri: item.image }}
         style={styles.carouselImage}
         resizeMode="cover"
       />
-      <Text style={styles.carouselTitle}>Get description</Text>
+      <TouchableOpacity
+        style={styles.shopNowButton}
+        onPress={() => getLink(item.image)}
+      >
+        <Text style={styles.carouselTitle}>Shop Now</Text>
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 
@@ -630,7 +679,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 50,
+    paddingVertical: "65%",
     height: "100%",
   },
   loadingText: {
@@ -726,5 +775,22 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     textAlign: "center",
+  },
+  loadingContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FFC688",
+  },
+  shopNowButton: {
+    backgroundColor: "#ccc",
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: "#000000",
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+    marginTop: 4,
   },
 });
