@@ -4,7 +4,7 @@ import {
   Nunito_900Black,
   useFonts,
 } from "@expo-google-fonts/nunito";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
@@ -26,14 +26,14 @@ import { useAuth } from "./context/AuthContext";
 const { width: screenWidth } = Dimensions.get("window");
 
 const catimg = [
-  require('../assets/frames/1.png'),
-  require('../assets/frames/2.png'),
-  require('../assets/frames/3.png'),
-  require('../assets/frames/4.png'),
-  require('../assets/frames/5.png'),
-  require('../assets/frames/6.png'),
-  require('../assets/frames/7.png'),
-  require('../assets/frames/8.png'),
+  require("../assets/frames/1.png"),
+  require("../assets/frames/2.png"),
+  require("../assets/frames/3.png"),
+  require("../assets/frames/4.png"),
+  require("../assets/frames/5.png"),
+  require("../assets/frames/6.png"),
+  require("../assets/frames/7.png"),
+  require("../assets/frames/8.png"),
 ];
 
 const Browse = () => {
@@ -67,7 +67,7 @@ const Browse = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentFrame((prevFrame) => (prevFrame + 1) % catimg.length);
-    }, 250);
+    }, 300);
 
     return () => clearInterval(interval);
   }, []);
@@ -336,6 +336,9 @@ const Browse = () => {
             notificationMessage === "Failed to save fit" && {
               backgroundColor: "#FF8A8A",
             },
+            notificationMessage === "Fetching shopping link..." && {
+              backgroundColor: "#8ABEFF",
+            },
             {
               transform: [{ translateY: notificationAnimation }],
             },
@@ -425,9 +428,8 @@ const Browse = () => {
                 {isLoading ? (
                   // Loading state
                   <View style={styles.loadingContainer}>
-                    
                     <View style={styles.animatedCat}>
-                      <Image 
+                      <Image
                         source={catimg[currentFrame]}
                         style={styles.catImage}
                         resizeMode="contain"
@@ -436,7 +438,11 @@ const Browse = () => {
                     <View style={styles.loadingTextContainer}>
                       <Text style={styles.loadingText}>{loadingMessage}</Text>
                       {loadingMessage === "Loading recommendations..." ? (
-                        <ActivityIndicator size="small" color="#000000" style={styles.loadingSpinner} />
+                        <ActivityIndicator
+                          size="small"
+                          color="#000000"
+                          style={styles.loadingSpinner}
+                        />
                       ) : null}
                     </View>
                   </View>
@@ -709,7 +715,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  //  paddingVertical: "0%",
+    //  paddingVertical: "0%",
   },
   loadingText: {
     fontSize: 16,

@@ -1,32 +1,31 @@
 import { Atma_600SemiBold, useFonts } from "@expo-google-fonts/atma";
 import { Nunito_600SemiBold, Nunito_900Black } from "@expo-google-fonts/nunito";
-import { router, Link } from "expo-router";
+import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
   Dimensions,
+  Image,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Image,
 } from "react-native";
 import Svg, { Path, Rect } from "react-native-svg";
 import { useAuth } from "./context/AuthContext";
 
-import Logo from "../assets/cat_logo.svg"; // Adjust the path as necessary
-
+import Logo from "../assets/Catto.svg"; // Adjust the path as necessary
 
 const catimg = [
-  require('../assets/frames/1.png'),
-  require('../assets/frames/2.png'),
-  require('../assets/frames/3.png'),
-  require('../assets/frames/4.png'),
-  require('../assets/frames/5.png'),
-  require('../assets/frames/6.png'),
-  require('../assets/frames/7.png'),
-  require('../assets/frames/8.png'),
+  require("../assets/frames/1.png"),
+  require("../assets/frames/2.png"),
+  require("../assets/frames/3.png"),
+  require("../assets/frames/4.png"),
+  require("../assets/frames/5.png"),
+  require("../assets/frames/6.png"),
+  require("../assets/frames/7.png"),
+  require("../assets/frames/8.png"),
 ];
 
 const BackgroundPattern = () => {
@@ -119,11 +118,11 @@ const Home = () => {
     startFloating();
   }, [floatAnimation]);
 
-  // Cat frame animation - cycles through catimg array every 250ms
+  // Cat frame animation - cycles through catimg array every 500ms
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentFrame((prevFrame) => (prevFrame + 1) % catimg.length);
-    }, 250);
+    }, 500);
 
     return () => clearInterval(interval);
   }, []);
@@ -207,7 +206,11 @@ const Home = () => {
       <TouchableOpacity
         style={[
           styles.button,
-          { backgroundColor: "#6D9BFF", borderColor: "#355A99", marginBottom: 0, },
+          {
+            backgroundColor: "#6D9BFF",
+            borderColor: "#355A99",
+            marginBottom: 0,
+          },
           galleryHover && { backgroundColor: "#90EE90" },
         ]}
         onPressIn={() => onPressButton("Gallery")}
@@ -215,16 +218,16 @@ const Home = () => {
       >
         <Text style={styles.buttonText}>Gallery</Text>
       </TouchableOpacity>
-      
+
       {/* Animated Cat under Gallery button */}
       <View style={styles.animatedCat}>
-        <Image 
+        <Image
           source={catimg[currentFrame]}
           style={styles.catImage}
           resizeMode="contain"
         />
       </View>
-      
+
       <View style={styles.userInfo}>
         <TouchableOpacity style={styles.logoutButton} onPress={logout}>
           <Text style={styles.logoutButtonText}>Logout</Text>
@@ -267,7 +270,7 @@ const styles = StyleSheet.create({
     shadowRadius: 16,
     elevation: 15,
     borderWidth: 2,
-    borderColor: "#ffe474",
+    borderColor: "#FFE2C0",
     marginBottom: 50,
   },
   image: {
