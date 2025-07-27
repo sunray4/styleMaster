@@ -1,9 +1,7 @@
 import { Stack } from "expo-router";
 import React from "react";
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { StyleSheet, View, ActivityIndicator } from "react-native";
 import { AuthProvider } from "./context/AuthContext";
-import jsonData from '../assets/8KkmvODnuS.json'; // might be useless-
 
 const RootLayout = () => {
 

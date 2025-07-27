@@ -13,6 +13,7 @@ import {
   Image,
   Modal,
   SafeAreaView,
+  Linking,
   ScrollView,
   StyleSheet,
   Text,
@@ -109,12 +110,12 @@ const Browse = () => {
       if (img_response.status === 200) {
         console.log("got image url");
         // comment out to avoid wasting free credits
-        // const url_response = await fetch(
-        //   address + "/find-match?img_url=" + img_data.image_url
-        // );
-        // const url_data = await url_response.json();
-        // console.log(url_data);
-        // Linking.openURL(url_data.match_url);
+        const url_response = await fetch(
+          address + "/find-match?img_url=" + img_data.image_url
+        );
+        const url_data = await url_response.json();
+        console.log(url_data);
+        Linking.openURL(url_data.match_url);
       } else {
         console.error("upload img error:", img_data.message);
       }
