@@ -23,7 +23,7 @@ import { useAuth } from "./context/AuthContext";
 import DeleteIcon from "../assets/delete.svg";
 
 const Gallery = () => {
-  const address = "https://ef7cb4d3179c.ngrok-free.app";
+  const address = "http://127.0.0.1:8000";
   const [imagesTops, setImagesTops] = useState([]);
   const [imagesBottoms, setImagesBottoms] = useState([]);
   const [loading, setLoading] = useState(true);

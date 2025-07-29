@@ -78,7 +78,6 @@ const BackgroundPattern = () => {
 const Home = () => {
   const { userEmail, isLoading, logout } = useAuth();
 
-  // Animation value for the floating effect
   const floatAnimation = useRef(new Animated.Value(0)).current;
 
   // State for cat frame animation
@@ -95,20 +94,19 @@ const Home = () => {
     }
   }, [isLoading, userEmail]);
 
-  // Animation effect
+  // cat circle animation
   useEffect(() => {
-    // Create a looping animation that goes up and down
     const startFloating = () => {
       Animated.loop(
         Animated.sequence([
           Animated.timing(floatAnimation, {
-            toValue: -15, // Move up 15 pixels
-            duration: 2000, // 2 seconds to go up
+            toValue: -15,
+            duration: 2000,
             useNativeDriver: true,
           }),
           Animated.timing(floatAnimation, {
-            toValue: 0, // Move back to original position
-            duration: 2000, // 2 seconds to go down
+            toValue: 0, // original position
+            duration: 2000,
             useNativeDriver: true,
           }),
         ])
@@ -141,7 +139,6 @@ const Home = () => {
     );
   }
 
-  // Show loading screen while checking authentication
   if (isLoading) {
     return (
       <View style={styles.container}>
@@ -151,12 +148,10 @@ const Home = () => {
     );
   }
 
-  // If not authenticated, don't render anything (will redirect)
   if (!userEmail) {
     return null;
   }
 
-  // Handle press button link
   const onPressButton = (buttonName) => {
     if (buttonName === "Browse") {
       console.log("Browse button pressed!");

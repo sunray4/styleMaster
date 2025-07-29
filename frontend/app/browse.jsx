@@ -11,9 +11,9 @@ import {
   Dimensions,
   FlatList,
   Image,
+  Linking,
   Modal,
   SafeAreaView,
-  Linking,
   ScrollView,
   StyleSheet,
   Text,
@@ -38,7 +38,7 @@ const catimg = [
 ];
 
 const Browse = () => {
-  const address = "https://ef7cb4d3179c.ngrok-free.app";
+  const address = "http://127.0.0.1:8000";
 
   let userEmail = null;
   try {
