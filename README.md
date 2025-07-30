@@ -4,8 +4,8 @@ Effortless and fashionable outfits, picked in record time. Our mobile app was de
 
 ## Demo
 
-Watch demo video [here](https://youtu.be/atBWUuJZ4-E)
-[![thumbnail](./assets/thumbnail.png)](https://youtu.be/atBWUuJZ4-E)
+Watch demo video [here](https://youtu.be/f7-Iza4QI_o)
+[![thumbnail](./assets/thumbnail.png)](https://youtu.be/f7-Iza4QI_o)
 
 ## Screenshots
 
