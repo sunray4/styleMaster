@@ -38,7 +38,7 @@ const catimg = [
 ];
 
 const Browse = () => {
-  const address = "http://127.0.0.1:8000";
+  const address = "http://192.168.1.120:8000";
 
   let userEmail = null;
   try {

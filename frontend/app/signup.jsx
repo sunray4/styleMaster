@@ -12,7 +12,7 @@ import {
 import { useAuth } from "./context/AuthContext";
 
 const Signup = () => {
-  const address = "http://127.0.0.1:8000";
+  const address = "http://192.168.1.120:8000";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
