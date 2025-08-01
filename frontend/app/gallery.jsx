@@ -163,39 +163,35 @@ const Gallery = () => {
       });
     }
 
-    const rows = [];
-    for (let i = 0; i < containers.length; i += 2) {
-      const rowContainers = containers.slice(i, i + 2);
-      rows.push(
-        <View key={i} style={styles.imageRow}>
-          {rowContainers.map((container, index) => (
-            <View key={container.id} style={styles.outfitContainer}>
-              {/* Top Image */}
-              <Image
-                source={{ uri: container.top }}
-                style={styles.topImage}
-                resizeMode="cover"
-              />
-              {/* Bottom Image */}
-              <Image
-                source={{ uri: container.bottom }}
-                style={styles.bottomImage}
-                resizeMode="cover"
-              />
+    // Return all containers in a single flex container that will wrap automatically
+    return (
+      <View style={styles.imageRow}>
+        {containers.map((container, index) => (
+          <View key={container.id} style={styles.outfitContainer}>
+            {/* Top Image */}
+            <Image
+              source={{ uri: container.top }}
+              style={styles.topImage}
+              resizeMode="cover"
+            />
+            {/* Bottom Image */}
+            <Image
+              source={{ uri: container.bottom }}
+              style={styles.bottomImage}
+              resizeMode="cover"
+            />
 
-              {/* Delete Button - Positioned absolutely to overlap */}
-              <TouchableOpacity
-                style={styles.deleteButton}
-                onPress={() => deleteOutfit(container.id)}
-              >
-                <DeleteIcon width="70%" height="70%" color="#6B7280" />
-              </TouchableOpacity>
-            </View>
-          ))}
-        </View>
-      );
-    }
-    return rows;
+            {/* Delete Button - Positioned absolutely to overlap */}
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={() => deleteOutfit(container.id)}
+            >
+              <DeleteIcon width="70%" height="70%" color="#6B7280" />
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
+    );
   };
 
   return (
@@ -265,23 +261,25 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   placeholder: {
-    width: 60, // Same width as home button to center the title
+    width: 60,
   },
   scrollContainer: {
     flex: 1,
   },
   gridContainer: {
     padding: 8,
+    paddingBottom: 24,
   },
   imageRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     marginBottom: 16,
   },
   outfitContainer: {
-    width: "48%",
+    width: 180,
     marginHorizontal: "1%",
+    marginBottom: 16,
     flexDirection: "column",
     backgroundColor: "white",
     borderRadius: 12,
@@ -294,6 +292,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    alignItems: "center",
+    justifyContent: "center",
   },
   imageContainer: {
     marginBottom: 8,

@@ -13,6 +13,7 @@ import {
   Image,
   Linking,
   Modal,
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -88,6 +89,31 @@ const Browse = () => {
 
   const viewabilityConfig = {
     itemVisiblePercentThreshold: 50,
+  };
+
+  // Navigation functions for web platform
+  const goToPreviousTop = () => {
+    if (currentTopIndex > 0) {
+      setCurrentTopIndex(currentTopIndex - 1);
+    }
+  };
+
+  const goToNextTop = () => {
+    if (currentTopIndex < carouselDataTops.length - 1) {
+      setCurrentTopIndex(currentTopIndex + 1);
+    }
+  };
+
+  const goToPreviousBottom = () => {
+    if (currentBottomIndex > 0) {
+      setCurrentBottomIndex(currentBottomIndex - 1);
+    }
+  };
+
+  const goToNextBottom = () => {
+    if (currentBottomIndex < carouselDataBottoms.length - 1) {
+      setCurrentBottomIndex(currentBottomIndex + 1);
+    }
   };
 
   if (!fontsLoaded) {
@@ -360,41 +386,182 @@ const Browse = () => {
 
       {/* Main Browse Content - Only visible after preferences are set */}
       <View style={styles.content}>
-        {/* Carousel Section */}
-        <View style={styles.carouselContainer}>
-          <FlatList
-            data={carouselDataTops}
-            renderItem={renderCarouselItem}
-            keyExtractor={(item) => item.id.toString()}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            pagingEnabled={false}
-            snapToInterval={screenWidth * 0.6 + 20}
-            decelerationRate="fast"
-            contentContainerStyle={styles.carouselContent}
-            onViewableItemsChanged={onViewableItemsChangedTop}
-            viewabilityConfig={viewabilityConfig}
-          />
-        </View>
+        {Platform.OS === "web" ? (
+          // Web platform: Single image display with navigation buttons
+          <View style={styles.webCarouselContainer}>
+            {/* Top Image Section */}
+            <View style={styles.webImageSection}>
+              <TouchableOpacity
+                style={[
+                  styles.webNavButton,
+                  currentTopIndex === 0 && styles.webNavButtonDisabled,
+                ]}
+                onPress={goToPreviousTop}
+                disabled={currentTopIndex === 0}
+              >
+                <Text
+                  style={[
+                    styles.webNavButtonText,
+                    currentTopIndex === 0 && styles.webNavButtonTextDisabled,
+                  ]}
+                >
+                  ←
+                </Text>
+              </TouchableOpacity>
 
-        {/* Second Carousel Section */}
-        <View
-          style={[styles.carouselContainer, { height: "50%", marginTop: 20 }]}
-        >
-          <FlatList
-            data={carouselDataBottoms}
-            renderItem={renderCarouselItem}
-            keyExtractor={(item) => item.id.toString()}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            pagingEnabled={false}
-            snapToInterval={screenWidth * 0.6 + 20}
-            decelerationRate="fast"
-            contentContainerStyle={styles.carouselContent}
-            onViewableItemsChanged={onViewableItemsChangedBottom}
-            viewabilityConfig={viewabilityConfig}
-          />
-        </View>
+              {carouselDataTops.length > 0 && (
+                <TouchableOpacity
+                  style={styles.webImageContainer}
+                  onPress={() =>
+                    getLink(carouselDataTops[currentTopIndex].image)
+                  }
+                >
+                  <Image
+                    source={{ uri: carouselDataTops[currentTopIndex].image }}
+                    style={styles.webImage}
+                    resizeMode="cover"
+                  />
+                  <TouchableOpacity
+                    style={styles.shopNowButton}
+                    onPress={() =>
+                      getLink(carouselDataTops[currentTopIndex].image)
+                    }
+                  >
+                    <Text style={styles.carouselTitle}>Shop Now</Text>
+                  </TouchableOpacity>
+                </TouchableOpacity>
+              )}
+
+              <TouchableOpacity
+                style={[
+                  styles.webNavButton,
+                  currentTopIndex === carouselDataTops.length - 1 &&
+                    styles.webNavButtonDisabled,
+                ]}
+                onPress={goToNextTop}
+                disabled={currentTopIndex === carouselDataTops.length - 1}
+              >
+                <Text
+                  style={[
+                    styles.webNavButtonText,
+                    currentTopIndex === carouselDataTops.length - 1 &&
+                      styles.webNavButtonTextDisabled,
+                  ]}
+                >
+                  →
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Bottom Image Section */}
+            <View style={styles.webImageSection}>
+              <TouchableOpacity
+                style={[
+                  styles.webNavButton,
+                  currentBottomIndex === 0 && styles.webNavButtonDisabled,
+                ]}
+                onPress={goToPreviousBottom}
+                disabled={currentBottomIndex === 0}
+              >
+                <Text
+                  style={[
+                    styles.webNavButtonText,
+                    currentBottomIndex === 0 && styles.webNavButtonTextDisabled,
+                  ]}
+                >
+                  ←
+                </Text>
+              </TouchableOpacity>
+
+              {carouselDataBottoms.length > 0 && (
+                <TouchableOpacity
+                  style={styles.webImageContainer}
+                  onPress={() =>
+                    getLink(carouselDataBottoms[currentBottomIndex].image)
+                  }
+                >
+                  <Image
+                    source={{
+                      uri: carouselDataBottoms[currentBottomIndex].image,
+                    }}
+                    style={styles.webImage}
+                    resizeMode="cover"
+                  />
+                  <TouchableOpacity
+                    style={styles.shopNowButton}
+                    onPress={() =>
+                      getLink(carouselDataBottoms[currentBottomIndex].image)
+                    }
+                  >
+                    <Text style={styles.carouselTitle}>Shop Now</Text>
+                  </TouchableOpacity>
+                </TouchableOpacity>
+              )}
+
+              <TouchableOpacity
+                style={[
+                  styles.webNavButton,
+                  currentBottomIndex === carouselDataBottoms.length - 1 &&
+                    styles.webNavButtonDisabled,
+                ]}
+                onPress={goToNextBottom}
+                disabled={currentBottomIndex === carouselDataBottoms.length - 1}
+              >
+                <Text
+                  style={[
+                    styles.webNavButtonText,
+                    currentBottomIndex === carouselDataBottoms.length - 1 &&
+                      styles.webNavButtonTextDisabled,
+                  ]}
+                >
+                  →
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : (
+          // Mobile platform: Original carousel behavior
+          <>
+            {/* Carousel Section */}
+            <View style={styles.carouselContainer}>
+              <FlatList
+                data={carouselDataTops}
+                renderItem={renderCarouselItem}
+                keyExtractor={(item) => item.id.toString()}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                pagingEnabled={false}
+                snapToInterval={screenWidth * 0.6 + 20}
+                decelerationRate="fast"
+                contentContainerStyle={styles.carouselContent}
+                onViewableItemsChanged={onViewableItemsChangedTop}
+                viewabilityConfig={viewabilityConfig}
+              />
+            </View>
+
+            {/* Second Carousel Section */}
+            <View
+              style={[
+                styles.carouselContainer,
+                { height: "50%", marginTop: 20 },
+              ]}
+            >
+              <FlatList
+                data={carouselDataBottoms}
+                renderItem={renderCarouselItem}
+                keyExtractor={(item) => item.id.toString()}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                pagingEnabled={false}
+                snapToInterval={screenWidth * 0.6 + 20}
+                decelerationRate="fast"
+                contentContainerStyle={styles.carouselContent}
+                onViewableItemsChanged={onViewableItemsChangedBottom}
+                viewabilityConfig={viewabilityConfig}
+              />
+            </View>
+          </>
+        )}
       </View>
 
       {/* Fixed Bottom Bar */}
@@ -836,5 +1003,76 @@ const styles = StyleSheet.create({
     marginTop: 70,
     width: 200,
     height: 200,
+  },
+  // Web Platform Styles
+  webCarouselContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  webImageSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    marginVertical: 10,
+  },
+  webImageContainer: {
+    backgroundColor: "white",
+    borderRadius: 15,
+    borderWidth: 2,
+    borderColor: "#FFD19F",
+    padding: 8,
+    alignItems: "center",
+    justifyContent: "space-between",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 4,
+    width: screenWidth * 0.6,
+    height: screenWidth * 0.6 * 1.2, // Maintain aspect ratio
+  },
+  webImage: {
+    width: "100%",
+    flex: 1,
+    borderRadius: 10,
+    marginBottom: 8,
+    resizeMode: "cover",
+  },
+  webNavButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#AEEFD8",
+    borderWidth: 1,
+    borderColor: "#78C8AE",
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  webNavButtonDisabled: {
+    backgroundColor: "#E0E0E0",
+    borderColor: "#C0C0C0",
+  },
+  webNavButtonText: {
+    fontSize: 20,
+    fontFamily: "Nunito_700Bold",
+    color: "black",
+  },
+  webNavButtonTextDisabled: {
+    color: "#999999",
   },
 });
