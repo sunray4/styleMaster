@@ -58,4 +58,4 @@ Run `playwright install` instead of `./venv/bin/playwright install` if you're no
 
 1. Start the backend server by running `./venv/bin/flask run --host=0.0.0.0 --port=8000` in the `/backend` terminal.
 2. Start the frontend Expo app:
-   - Run `npx expo start` in the /frontend terminal and scan the QR code using the Expo Go app or enter in the URL
+   - Run `npx expo start` in the `/frontend` terminal and scan the QR code using the Expo Go app or enter in the URL

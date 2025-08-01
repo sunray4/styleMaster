@@ -4,7 +4,7 @@ import {
   Nunito_900Black,
   useFonts,
 } from "@expo-google-fonts/nunito";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
@@ -40,13 +40,8 @@ const catimg = [
 const Browse = () => {
   const address = "http://192.168.1.120:8000";
 
-  let userEmail = null;
-  try {
-    const auth = useAuth();
-    userEmail = auth.userEmail;
-  } catch (error) {
-    console.log("Auth context not available:", error);
-  }
+  const auth = useAuth();
+  const userEmail = auth?.userEmail || null;
 
   const [showPreferenceModal, setShowPreferenceModal] = useState(true);
   const [selectedGender, setSelectedGender] = useState(null);
@@ -78,6 +73,22 @@ const Browse = () => {
     Nunito_700Bold,
     Nunito_600SemiBold,
   });
+
+  const onViewableItemsChangedTop = useCallback(({ viewableItems }) => {
+    if (viewableItems.length > 0) {
+      setCurrentTopIndex(viewableItems[0].index);
+    }
+  }, []);
+
+  const onViewableItemsChangedBottom = useCallback(({ viewableItems }) => {
+    if (viewableItems.length > 0) {
+      setCurrentBottomIndex(viewableItems[0].index);
+    }
+  }, []);
+
+  const viewabilityConfig = {
+    itemVisiblePercentThreshold: 50,
+  };
 
   if (!fontsLoaded) {
     return (
@@ -142,16 +153,6 @@ const Browse = () => {
       </TouchableOpacity>
     </TouchableOpacity>
   );
-
-  const onViewableItemsChanged = ({ viewableItems }, setIndex) => {
-    if (viewableItems.length > 0) {
-      setIndex(viewableItems[0].index);
-    }
-  };
-
-  const viewabilityConfig = {
-    itemVisiblePercentThreshold: 50,
-  };
 
   const showNotificationMessage = (message) => {
     setNotificationMessage(message);
@@ -371,9 +372,7 @@ const Browse = () => {
             snapToInterval={screenWidth * 0.6 + 20}
             decelerationRate="fast"
             contentContainerStyle={styles.carouselContent}
-            onViewableItemsChanged={(info) =>
-              onViewableItemsChanged(info, setCurrentTopIndex)
-            }
+            onViewableItemsChanged={onViewableItemsChangedTop}
             viewabilityConfig={viewabilityConfig}
           />
         </View>
@@ -392,9 +391,7 @@ const Browse = () => {
             snapToInterval={screenWidth * 0.6 + 20}
             decelerationRate="fast"
             contentContainerStyle={styles.carouselContent}
-            onViewableItemsChanged={(info) =>
-              onViewableItemsChanged(info, setCurrentBottomIndex)
-            }
+            onViewableItemsChanged={onViewableItemsChangedBottom}
             viewabilityConfig={viewabilityConfig}
           />
         </View>

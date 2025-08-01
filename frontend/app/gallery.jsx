@@ -7,7 +7,10 @@ import {
 import { router } from "expo-router";
 import React from "react";
 import {
+  ActivityIndicator,
   Alert,
+  Image,
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -16,8 +19,7 @@ import {
   View,
 } from "react-native";
 
-import { useEffect, useState } from "react";
-import { ActivityIndicator, Image } from "react-native";
+import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "./context/AuthContext";
 
 import DeleteIcon from "../assets/delete.svg";
@@ -31,53 +33,13 @@ const Gallery = () => {
   const auth = useAuth();
   const userEmail = auth.userEmail;
 
-  const deleteOutfit = async (index) => {
-    console.log("Delete button pressed for index:", index);
-    Alert.alert(
-      "Delete Outfit",
-      "Are you sure you want to delete this outfit? This action cannot be undone.",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            // Remove the outfit at the specified index
-            const newTops = [...imagesTops];
-            const newBottoms = [...imagesBottoms];
+  let [fontsLoaded] = useFonts({
+    Nunito_900Black,
+    Nunito_700Bold,
+    Nunito_600SemiBold,
+  });
 
-            newTops.splice(index, 1);
-            newBottoms.splice(index, 1);
-
-            setImagesTops(newTops);
-            setImagesBottoms(newBottoms);
-
-            try {
-              const response = await fetch(
-                address +
-                  "/gallery-delete?email=" +
-                  userEmail +
-                  "&index=" +
-                  index,
-                {
-                  method: "DELETE",
-                }
-              );
-              const responseData = await response.json();
-              console.log("delete response", responseData);
-            } catch (error) {
-              console.error("Gallery delete error:", error);
-            }
-          },
-        },
-      ]
-    );
-  };
-
-  const getGalleryData = async () => {
+  const getGalleryData = useCallback(async () => {
     try {
       const response = await fetch(address + "/gallery?email=" + userEmail, {
         method: "GET",
@@ -86,7 +48,6 @@ const Gallery = () => {
         },
       });
       const responseData = await response.json();
-      // console.log("gallery response", responseData);
       if (response.ok) {
         setImagesTops(responseData.data.map((item) => item.top));
         setImagesBottoms(responseData.data.map((item) => item.bottom));
@@ -100,32 +61,76 @@ const Gallery = () => {
     } finally {
       setLoading(false);
     }
-
-    let [fontsLoaded] = useFonts({
-      Nunito_900Black,
-      Nunito_700Bold,
-      Nunito_600SemiBold,
-    });
-
-    if (!fontsLoaded) {
-      return (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#007AFF" />
-        </View>
-      );
-    }
-
-    // Simulate loading delay
-    setTimeout(() => {
-      setImagesTops(sampleTops);
-      setImagesBottoms(sampleBottoms);
-      setLoading(false);
-    }, 1000);
-  };
+  }, [userEmail]);
 
   useEffect(() => {
     getGalleryData();
-  }, []);
+  }, [getGalleryData]);
+
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    );
+  }
+
+  const deleteOutfit = async (index) => {
+    console.log("Delete button pressed for index:", index);
+
+    const performDelete = async () => {
+      // Remove the outfit at the specified index
+      const newTops = [...imagesTops];
+      const newBottoms = [...imagesBottoms];
+
+      newTops.splice(index, 1);
+      newBottoms.splice(index, 1);
+
+      setImagesTops(newTops);
+      setImagesBottoms(newBottoms);
+
+      try {
+        const response = await fetch(
+          address + "/gallery-delete?email=" + userEmail + "&index=" + index,
+          {
+            method: "DELETE",
+          }
+        );
+        const responseData = await response.json();
+        console.log("delete response", responseData);
+      } catch (error) {
+        console.error("Gallery delete error:", error);
+      }
+    };
+
+    // Use different confirmation methods for web vs mobile
+    if (Platform.OS === "web") {
+      // For web, use window.confirm
+      const confirmed = window.confirm(
+        "Are you sure you want to delete this outfit? This action cannot be undone."
+      );
+      if (confirmed) {
+        await performDelete();
+      }
+    } else {
+      // For mobile, use Alert.alert
+      Alert.alert(
+        "Delete Outfit",
+        "Are you sure you want to delete this outfit? This action cannot be undone.",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Delete",
+            style: "destructive",
+            onPress: performDelete,
+          },
+        ]
+      );
+    }
+  };
 
   const renderImageGrid = () => {
     console.log(
