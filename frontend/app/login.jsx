@@ -21,6 +21,11 @@ const Login = () => {
   const { login } = useAuth();
 
   const signIn = async () => {
+    Alert.alert("Debug", "Button pressed!");
+    console.log("signIn function called!");
+    console.log("Email:", email);
+    console.log("Password:", password);
+
     if (!email || !password) {
       Alert.alert("Error", "Please fill in all fields");
       return;
@@ -28,15 +33,24 @@ const Login = () => {
 
     setIsLoading(true);
     try {
-      const response = await fetch(address + "/login", {
+      const loginUrl = address + "/login";
+      console.log("Attempting login to:", loginUrl);
+      console.log("Full URL:", loginUrl);
+      console.log("Request payload:", { email: email, password: password });
+
+      const response = await fetch(loginUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email: email, password: password }),
       });
+
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers);
+
       const data = await response.json();
-      console.log(data);
+      console.log("Response data:", data);
 
       if (data.status === "success") {
         await login(email);
@@ -48,7 +62,9 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Login error:", error);
-      Alert.alert("Error", "Network error. Please try again.");
+      console.error("Error details:", error.message);
+      console.error("Error stack:", error.stack);
+      Alert.alert("Error", `Network error: ${error.message}`);
       setEmail("");
       setPassword("");
     } finally {

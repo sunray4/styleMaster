@@ -79,7 +79,14 @@ def scrape_images():
 
 @app.route('/login', methods=['POST'])
 def login():
+    print("Login request received!")
+    print("Request headers:", dict(request.headers))
+    print("Request method:", request.method)
+    print("Request URL:", request.url)
+    
     data = request.json
+    print("Request data:", data)
+    
     if not data:
         return jsonify({'status': 'error', 'message': 'No JSON data provided'}), 400
     email = data.get('email')
