@@ -11,8 +11,9 @@ import {
 } from "react-native";
 import { useAuth } from "./context/AuthContext";
 
+import { address } from "../address";
+
 const Login = () => {
-  const address = "http://192.168.1.120:8000";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);

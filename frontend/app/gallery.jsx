@@ -22,10 +22,10 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "./context/AuthContext";
 
+import { address } from "../address";
 import DeleteIcon from "../assets/delete.svg";
 
 const Gallery = () => {
-  const address = "http://192.168.1.120:8000";
   const [imagesTops, setImagesTops] = useState([]);
   const [imagesBottoms, setImagesBottoms] = useState([]);
   const [loading, setLoading] = useState(true);

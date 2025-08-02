@@ -25,6 +25,8 @@ import {
 import { router } from "expo-router";
 import { useAuth } from "./context/AuthContext";
 
+import { address } from "../address";
+
 const { width: screenWidth } = Dimensions.get("window");
 
 const catimg = [
@@ -39,8 +41,6 @@ const catimg = [
 ];
 
 const Browse = () => {
-  const address = "http://192.168.1.120:8000";
-
   const auth = useAuth();
   const userEmail = auth?.userEmail || null;
 
