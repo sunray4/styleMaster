@@ -21,7 +21,6 @@ const Login = () => {
   const { login } = useAuth();
 
   const signIn = async () => {
-    Alert.alert("Debug", "Button pressed!");
     console.log("signIn function called!");
     console.log("Email:", email);
     console.log("Password:", password);

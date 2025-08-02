@@ -15,7 +15,7 @@ from img_search import img_search
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["http://localhost:8081"])
 IMAGE_FOLDER_TOPS = 'images/tops'
 IMAGE_FOLDER_BOTTOMS = 'images/bottoms'
 IMGBB_KEY = os.getenv('IMGBB_KEY')
