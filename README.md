@@ -64,7 +64,9 @@ playwright install
 
 ## Deployment
 
-Web version of this mobile app is available deployed on Hack Club Nest!! You can access it [here](https://sunray4.hackclub.app). Create your own account, or login with the following credentials to test the app (unfortunately the browse feature isnt available in this deployed version as nest doesnt support non-headless web scrapers):
+Web version of this mobile app is now deployed on Hack Club Nest!! You can access it [here](https://sunray4.hackclub.app). Create your own account, or login with the following credentials to test the app:
 
 - Username: `test@test.com`
 - Password: `style`
+
+Unfortunately, the browse feature isnt available in this deployed version as nest doesn't support non-headless web scrapers.
