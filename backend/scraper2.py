@@ -24,8 +24,12 @@ def scrape_images(gender, formality):
         with sync_playwright() as p:
 
             browser = p.chromium.launch(headless=False)
+            context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
 
-            page = browser.new_page()
+            page = context.new_page()
+            page.set_extra_http_headers({
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+            })
             
             # TOPS
             topLink = ""
@@ -54,7 +58,7 @@ def scrape_images(gender, formality):
                 topLink = "https://www2.hm.com/en_ca/search-results.html?q=casual&productTypes=Blouse,Cardigan,Knit+Sweater,T-shirt,Top,Vest&image=stillLife&sort=RELEVANCE&page=1"
             
             print(f"Using link: {topLink}")
-            page.goto(topLink)
+            page.goto(topLink, wait_until="domcontentloaded", timeout=60000)
             page.wait_for_selector("ul > li")
             for _ in range(5):
                 page.mouse.wheel(0, 2000)

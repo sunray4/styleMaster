@@ -33,10 +33,12 @@ cd frontend
 npm install
 npx expo start
 cd ../backend
+mkdir images/tops
+mkdir images/bottoms
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-./venv/bin/playwright install
+playwright install
 ```
 
 For windows:
@@ -46,16 +48,23 @@ cd frontend
 npm install
 npx expo start
 cd ../backend
+mkdir images/tops
+mkdir images/bottoms
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
 playwright install
 ```
 
-Run `playwright install` instead of `./venv/bin/playwright install` if you're not using venv.
-
 ## How to run:
 
-1. Start the backend server by running `./venv/bin/flask run --host=0.0.0.0 --port=8000` in the `/backend` terminal.
+1. Start the backend server by running `flask run --host=0.0.0.0 --port=8000` in the `/backend` terminal.
 2. Start the frontend Expo app:
    - Run `npx expo start` in the `/frontend` terminal and scan the QR code using the Expo Go app or enter in the URL
+
+## Deployment
+
+Web version of this mobile app is available deployed on Hack Club Nest!! You can access it [here](https://sunray4.hackclub.app). Create your own account, or login with the following credentials to test the app (unfortunately the browse feature isnt available in this deployed version as nest doesnt support non-headless web scrapers):
+
+- Username: `test@test.com`
+- Password: `style`
