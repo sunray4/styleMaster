@@ -1009,17 +1009,17 @@ const styles = StyleSheet.create({
   },
   // Web Platform Styles
   webCarouselContainer: {
-    flex: 1,
-    justifyContent: "center",
+    width: "100%",
     alignItems: "center",
     paddingHorizontal: 20,
+    paddingTop: 20,
   },
   webImageSection: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
-    marginVertical: 10,
+    height: screenWidth * 0.32 * 0.6 + 20,
   },
   webImageContainer: {
     backgroundColor: "white",
@@ -1037,8 +1037,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 4,
-    width: screenWidth * 0.6,
-    height: screenWidth * 0.6 * 1.2, // Maintain aspect ratio
+    width: screenWidth * 0.17,
+    height: screenWidth * 0.32 * 0.6,
   },
   webImage: {
     width: "100%",
@@ -1056,7 +1056,7 @@ const styles = StyleSheet.create({
     borderColor: "#78C8AE",
     alignItems: "center",
     justifyContent: "center",
-    marginHorizontal: 20,
+    marginHorizontal: 30,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -1071,7 +1071,7 @@ const styles = StyleSheet.create({
     borderColor: "#C0C0C0",
   },
   webNavButtonText: {
-    fontSize: 20,
+    fontSize: 24,
     fontFamily: "Nunito_700Bold",
     color: "black",
   },
