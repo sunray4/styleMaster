@@ -41,12 +41,15 @@ const Gallery = () => {
 
   const getGalleryData = useCallback(async () => {
     try {
-      const response = await fetch(address + "/gallery?email=" + userEmail, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        address + "/users/" + userEmail + "/gallery",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const responseData = await response.json();
       if (response.ok) {
         setImagesTops(responseData.data.map((item) => item.top));
@@ -91,7 +94,7 @@ const Gallery = () => {
 
       try {
         const response = await fetch(
-          address + "/gallery-delete?email=" + userEmail + "&index=" + index,
+          address + "/users/" + userEmail + "/fits/" + index,
           {
             method: "DELETE",
           }

@@ -32,7 +32,7 @@ const Login = () => {
 
     setIsLoading(true);
     try {
-      const loginUrl = address + "/login";
+      const loginUrl = address + "/auth/login";
       console.log("Attempting login to:", loginUrl);
       console.log("Full URL:", loginUrl);
       console.log("Request payload:", { email: email, password: password });

@@ -135,7 +135,7 @@ const Browse = () => {
         no_prefix_image = image.substring(commaIndex + 1);
       }
 
-      const img_response = await fetch(address + "/upload", {
+      const img_response = await fetch(address + "/images/upload", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -147,9 +147,15 @@ const Browse = () => {
       if (img_response.status === 200) {
         console.log("got image url");
         // comment out to avoid wasting free credits
-        const url_response = await fetch(
-          address + "/find-match?img_url=" + img_data.image_url
-        );
+        const url_response = await fetch(address + "/images/find-match", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            img_url: img_data.image_url,
+          }),
+        });
         const url_data = await url_response.json();
         console.log(url_data);
         Linking.openURL(url_data.match_url);
@@ -213,19 +219,16 @@ const Browse = () => {
     setLoadingMessage("Loading recommendations...");
 
     try {
-      const response = await fetch(
-        address +
-          "/scrape_images?gender=" +
-          selectedGender +
-          "&formality=" +
-          selectedFormality,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(address + "/scrape_images", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          gender: selectedGender,
+          formality: selectedFormality,
+        }),
+      });
 
       if (response.status === 200) {
         setLoadingMessage("Styles fetched!!");
@@ -313,7 +316,7 @@ const Browse = () => {
     const top = carouselDataTops[topIndex];
     const bottom = carouselDataBottoms[bottomIndex];
     try {
-      const response = await fetch(address + "/save_fit", {
+      const response = await fetch(address + "/users/" + userEmail + "/fits", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

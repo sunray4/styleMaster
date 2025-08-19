@@ -34,7 +34,7 @@ const Signup = () => {
 
     setIsLoading(true);
     try {
-      const response = await fetch(address + "/signup", {
+      const response = await fetch(address + "/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

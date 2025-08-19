@@ -62,11 +62,11 @@ playwright install
 2. Start the frontend Expo app:
    - Run `npx expo start` in the `/frontend` terminal and scan the QR code using the Expo Go app or enter in the URL
 
-## Deployment
+<!-- ## Deployment
 
 Web version of this mobile app is now deployed on Hack Club Nest!! You can access it [here](https://sunray4.hackclub.app). Create your own account, or login with the following credentials to test the app:
 
 - Username: `test@test.com`
 - Password: `style`
 
-Unfortunately, the browse feature isnt available in this deployed version as nest doesn't support non-headless web scrapers.
+Unfortunately, the browse feature isnt available in this deployed version as nest doesn't support non-headless web scrapers. -->
