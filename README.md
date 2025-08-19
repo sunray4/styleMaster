@@ -58,7 +58,7 @@ playwright install
 
 ## How to run:
 
-1. Start the backend server by running `flask run --host=0.0.0.0 --port=8000` in the `/backend` terminal.
+1. Start the backend server by running `python3 app.py` in the `/backend` terminal.
 2. Start the frontend Expo app:
    - Run `npx expo start` in the `/frontend` terminal and scan the QR code using the Expo Go app or enter in the URL
 

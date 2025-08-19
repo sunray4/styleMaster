@@ -95,15 +95,11 @@ def setup_links(gender, formality):
         bottomLink = "https://www2.hm.com/en_ca/search-results.html?q=casual&productTypes=Jeans,Pajama+Pants,Pants,Shorts,Skirt,Skort,Leggings&image=stillLife&department=all&sort=RELEVANCE&page=3"
 
     print(f"Using top link: {topLink}")
-    scrape_images(topLink, "tops")
+    top_link_success = scrape_images(topLink, "tops")
     
     
     print(f"Using bottoms link: {bottomLink}")
-    scrape_images(bottomLink, "bottoms")
+    bottom_link_success = scrape_images(bottomLink, "bottoms")
+    
+    return top_link_success and bottom_link_success
 
-
-
-
-
-
-setup_links("female", "casual")

@@ -1,7 +1,6 @@
 import os
 import base64
-from urllib import response
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request   
 from flask_cors import CORS
 import requests
 import scraper2
@@ -43,7 +42,7 @@ def scrape_images():
     gender = data.get('gender', 'all')
     formality = data.get('formality', 'all')
     
-    success = scraper2.scrape_images(gender, formality)
+    success = scraper2.setup_links(gender, formality)
     if success:
         files = os.listdir(IMAGE_FOLDER_TOPS)
         image_data_tops = []
