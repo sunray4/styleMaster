@@ -2,6 +2,9 @@
 
 Effortless and fashionable outfits, picked in record time. Our mobile app was designed to allow the user to curate different outfits from reliable clothing store outlets easily! Runs on both iOS and Android.
 
+## How we built it
+For the frontend of the mobile app, we used React Native with Expo, so it would work on both Android and iPhone. For the backend server, we used Flask with Python and followed RESTful guidelines. We created a web scraper with Playwright, and stored user information on Mongo DB Atlas. We also used SerpAPI to perform google image search – this allowed us to find e-commerce stores that were selling clothing similar to the outfit that the user likes.
+
 ## Demo
 
 Watch demo video [here](https://youtu.be/f7-Iza4QI_o)
